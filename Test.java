@@ -13,28 +13,15 @@ import java.io.RandomAccessFile;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
 
 public class Test {
-	
-	public static String genVUID(Random r, Set<String> k) {
-		BigInteger bi;
-		int[] b = new int[] {32, 29, 27, 25, 18, 16, 15, 14, 12, 9, 2, 1};
-		while(true) {
-			bi = new BigInteger("0");
-			for(int i = 0; i < b.length; i++) {
-				BigInteger random = new BigInteger(b[i], r);
-				bi = bi.add(random);
-			}
-			if(!k.contains(bi.toString())) {
-				break;
-			}
-	    }
-	    return String.format("%010d", bi);
-	}
 	
 	public static String hashFunction(String data) { //unused
 		String hash = new String();
@@ -50,11 +37,11 @@ public class Test {
 		return hash;
 	}
 	
-	public static String[] getLookup(String s, HashMap<String, Long> hm, File f) {
+	public static String[] lookup(long l, File f) {
 		String a = new String();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(f));
-			br.skip(hm.get(s));
+			br.skip(l);
 			a = br.readLine();
 			br.close();
 		} catch(FileNotFoundException e) {
@@ -62,14 +49,60 @@ public class Test {
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
-		return a.split(",");
+		String[] sa = a.split(",");
+		String[] sr = new String[11];
+		sr[0] = sa[0];
+		int i;
+		for(i = 1; i < 5; i++) {
+			char[] ch = sa[i].toCharArray();
+			StringBuilder sb = new StringBuilder();
+			int j;
+			for(j = 0; j < ch.length; j++) {
+				if(ch[j] != ' ') {
+					break;
+				}
+			}
+			for(; j < ch.length; j++) {
+				sb.append(ch[j]);
+			}
+			sr[i] = sb.toString();
+		}
+		for(; i < sr.length; i++) {
+			sr[i] = sa[i];
+		}
+		return sr;
 	}
 	
-	public static long register(String s, File f) {
+	public static long register(String[] sa, Set<String> k, File f) {
+		BigInteger bi;
+		int[] b = new int[] {32, 29, 27, 25, 18, 16, 15, 14, 12, 9, 2, 1};
+		while(true) {
+			bi = new BigInteger("0");
+			for(int i = 0; i < b.length; i++) {
+				BigInteger random = new BigInteger(b[i], new Random());
+				bi = bi.add(random);
+			}
+			if(!k.contains(bi.toString())) {
+				break;
+			}
+	    }
+	    String[] sr = new String[11];
+	    sr[0] = String.format("%010d", bi);
+	    for(int i = 1; i < (sr.length - 1); i++) {
+	    	sr[i] = sa[i - 1];
+	    }
+	    Date d = new Date();
+	    SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+	    StringBuilder sbd = new StringBuilder(sdf.format(d));
+	    Calendar c = Calendar.getInstance();
+	    c.setTime(d);
+	    c.add(Calendar.YEAR, 1);
+	    sbd.append(sdf.format(c.getTime()));
+	    sr[sr.length - 1] = sbd.toString();
 		long l = f.length();
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f, true));
-			bw.write(s);
+			bw.write(formatRow(sr));
 			bw.close();
 		} catch(FileNotFoundException e) {
 			e.printStackTrace();
@@ -112,38 +145,34 @@ public class Test {
 	public static String formatRow(String[] sa) {
 		StringBuilder sb = new StringBuilder(sa[0]).append(',');
 		int[] p = new int[] {20, 20, 20, 20};
-		for(int i = 1; i < p.length; i++) {
-			char[] ch = new char[p[i] - sa[i].length()];
+		int i;
+		for(i = 1; i < (p.length + 1); i++) {
+			char[] ch = new char[p[i - 1] - sa[i].length()];
 			Arrays.fill(ch, ' ');
 			sb.append(ch).append(sa[i]).append(',');
 		}
-		for(int i = (p.length + 1); i < sa.length; i++) {
+		for(; i < sa.length; i++) {
 			sb.append(sa[i]).append(',');
 		}
 		sb.append('\n');
 		return sb.toString();
 	}
-	
-	public static String formatCell(String s) {
-		char[] ch = s.toCharArray();
-		StringBuilder sb = new StringBuilder();
-		int i;
-		for(i = 0; i < ch.length; i++) {
-			if(ch[i] != ' ') {
-				break;
+
+	public static void editRow(String[] sa, int c, long l, File f) {
+		String[] sr = new String[11];
+		String[] sc = lookup(l, f);
+		for(int i = 0; i < sr.length; i++) {
+			if(c <= i && i < (c + sa.length)) {
+				sr[i] = sa[i - c];
+			} else {
+				sr[i] = sc[i];
 			}
 		}
-		for(; i < ch.length; i++) {
-			sb.append(ch[i]);
-		}
-		return sb.toString();
-	}
-	
-	public static void editRow(String[] sa, String s, HashMap<String, Long> hm, File f) { //not tested
+		String s = formatRow(sr);
 		try {
 			RandomAccessFile raf = new RandomAccessFile(f, "rw");
-			raf.seek(hm.get(s));
-			raf.write(Arrays.toString(sa).getBytes());
+			raf.seek(l);
+			raf.write(s.getBytes());
 			raf.close();
 		} catch(FileNotFoundException e) {
 			e.printStackTrace();
@@ -174,7 +203,6 @@ public class Test {
 		
 		HashMap<String, Long> map = loadHash(index);
 		
-		String id = new String(genVUID(new Random(), map.keySet()));
 		String firstName = new String("JOHN");
 		String lastName = new String("DOE");
 		String street = new String("1234 ROAD ST");
@@ -186,9 +214,8 @@ public class Test {
 		String race = new String("W");
 		String valid = new String("0101202012312021");
 		
-		String[] sArr = new String[] {id, lastName, firstName, street, city, state, zip, dob, sex, race, valid};
-		String s = formatRow(sArr);
-		long l = register(s, file);
+		String[] sArr = new String[] {lastName, firstName, street, city, state, zip, dob, sex, race};
+		long l = register(sArr, map.keySet(), file);
 		
 		StringBuilder name = new StringBuilder(lastName).append(firstName);
 		StringBuilder address = new StringBuilder(street).append(city).append(state).append(zip);
@@ -199,9 +226,13 @@ public class Test {
 			saveHash(map, index);
 		}
 		
-		for(int i = 0; i < 10; i++) {
-			System.out.println(formatCell(getLookup(sb.toString(), map, file)[i]));
-		}
+		System.out.println(Arrays.toString(lookup(map.get(sb.toString()), file)));
+		
+		String street2 = new String("5678 ROAD ST");
+		String[] address2 = new String[] {street2, city, state, zip};
+		editRow(address2, 3, map.get(sb.toString()), file);
+		
+		System.out.println(Arrays.toString(lookup(map.get(sb.toString()), file)));
 		
 	}
 
