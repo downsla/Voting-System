@@ -20,11 +20,11 @@ public class TestC extends TestF{ //test candidate class
 	}
 	
 	public static boolean checkIfPositions() { //returns true if there are positions to vote on ballot
-		return (firstPosition != candidateFile.length());
+		return (firstPosition < candidateFile.length());
 	}
 	
-	public static void setData(int n) { //loads necessary global variable files and creates their hash maps and key sets, needs max number of candidates
-		File[] fs = setFile(new String[] {"candidates.csv", "indexC.txt"}); 
+	public static void setData(String s, int n) { //loads necessary global variable files and creates their hash maps and key sets, needs max number of candidates and state
+		File[] fs = setFile(new String[] {"candidates", "indexC"}, s); 
 		candidateFile = fs[0];
 		indexC = fs[1];
 		mapC = loadHash(indexC);
@@ -35,16 +35,16 @@ public class TestC extends TestF{ //test candidate class
 		firstPosition = candidateFile.length();
 	}
 	
-	public static void createNew(int n) { //clears files for new
+	public static void createNew(String s, int n) { //clears files for new
 		candidateFile.delete();
-		TestB.resetBallot();
-		setData(n);
+		TestB.resetBallot(s);
+		setData(s, n);
 	}
 	
 	public static void addPosition(String[] sa, int n) { //adds position to candidate file, designed to be constructed in loop and passed the iterative starting from 1
 		String[] sr = new String[sa.length + ((sa.length - 1) / 2)]; //increases array size to hold vote count for each candidate
 		System.arraycopy(sr, 0, sa, 0, sa.length);
-		for(int i = sa.length - 1; i < sr.length; i++) {
+		for(int i = sa.length - 1; i < sr.length; i++) { //adds empty vote count string
 			sr[i] = "000000000";
 		}
 		long l = writeFile(formatRow(sa), candidateFile); //saves pointer from new registered info

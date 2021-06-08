@@ -62,6 +62,13 @@ public class TestF { //test class containing methods to be inherited
 		}
 	}
 	
+	public static File[] setFile(String[] sa, String s) { //appends state to file name
+		StringBuilder[] sba = new StringBuilder[] {new StringBuilder(sa[0]), new StringBuilder(sa[1])}; //makes file in accordance with state
+		sba[0].append("-" + s + ".csv");
+		sba[1].append("-" + s + ".txt");
+		return setFile(new String[] {sba[0].toString(), sba[1].toString()});
+	}
+	
 	public static File[] setFile(String[] sa) { //loads files from input array
 		File[] fs = new File[sa.length];
 		for(int i = 0; i < sa.length; i++) {

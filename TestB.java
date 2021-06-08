@@ -32,14 +32,14 @@ public class TestB extends TestF{ //test ballot class
 		return (0 < ballotFile.length());
 	}
 	
-	public static void resetBallot() { //clears files
+	public static void resetBallot(String s) { //clears files
 		ballotFile.delete();
 		indexB.delete();
-		setData();
+		setData(s);
 	}
 	
-	public static void setData() { //loads necessary global variable files and creates their hash maps and key sets
-		File[] fs = setFile(new String[] {"ballots.csv", "indexB.txt"}); 
+	public static void setData(String s) { //loads necessary global variable files and creates their hash maps and key sets
+		File[] fs = setFile(new String[] {"ballots", "indexB"}, s); 
 		ballotFile = fs[0];
 		indexB = fs[1];
 		mapB = loadHash(indexB);
