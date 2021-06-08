@@ -41,7 +41,7 @@ public class TestD { //test driver class
 			System.out.println(Arrays.toString(Test.lookup(Test.getPointerVD(sAlt))));
 		}
 		
-		System.out.println(Test.getVUID(Test.getPointerVD(sAlt)));
+		System.out.println(Test.getVUID(Test.getPointerVD(sAlt))); //tests pulling only VUID
 
 	}
 

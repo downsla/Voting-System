@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 public class TestF { //test class containing methods to be inherited
 	
-	public static String hashFunction(String data) { //unused
+	public static String hashFunction(String data) { //unused hashCode
 		String hash = new String();
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
