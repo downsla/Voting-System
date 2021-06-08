@@ -99,11 +99,7 @@ public class Test {
 	    for(int i = 1; i < (sr.length - 1); i++) { //adds inputed array of info
 	    	sr[i] = sa[i];
 	    }
-	    Calendar c = Calendar.getInstance(); //generates expiration date, will be moved later into its own method for more uses
-	    c.setTime(new Date());
-	    c.add(Calendar.YEAR, 1);
-	    String sd = new String(new SimpleDateFormat("ddMMyyyy").format(c.getTime()));
-	    sr[sr.length - 1] = sd;
+	    sr[sr.length - 1] = genExpDate(); //adds expiration date
 		long l = voterFile.length(); //saves pointer to the new registered info
 		try { //appends info to the end of the voter file
 			BufferedWriter bw = new BufferedWriter(new FileWriter(voterFile, true));
@@ -119,6 +115,33 @@ public class Test {
 		saveHash(mapNA, indexNA);
 		saveHash(mapVD, indexVD);
 		return sr;
+	}
+	
+	public static String genExpDate() { //generates expiration date string
+		Calendar c = Calendar.getInstance();
+	    c.setTime(new Date());
+	    c.add(Calendar.YEAR, 1);
+	    return new String(new SimpleDateFormat("MMddyyyy").format(c.getTime()));
+	}
+	
+	public static boolean checkExpDate(String s) { //checks given expiration date against current date
+		String c = new String(new SimpleDateFormat("MMddyyyy").format(new Date())); //current date
+		char[] chE = s.toCharArray(); //separates to characters
+		char[] chC = c.toCharArray();
+		if(Integer.valueOf(String.copyValueOf(chC, 4, 4)) <= Integer.valueOf(String.copyValueOf(chE, 4, 4))) { //checks year
+			if(Integer.valueOf(String.copyValueOf(chC, 0, 2)) <= Integer.valueOf(String.copyValueOf(chE, 0, 2))) { //checks month
+				if(Integer.valueOf(String.copyValueOf(chC, 2, 2)) <= Integer.valueOf(String.copyValueOf(chE, 2, 2))) { //checks day
+					return false;
+				} else {
+					return true;
+				}
+			} else {
+				return true;
+			}
+		} else {
+			return true;
+		}
+		
 	}
 	
 	public static HashMap<String, Long> loadHash(File f) { //reads hash map from file
@@ -267,6 +290,11 @@ public class Test {
 			String[] addressNew = new String[] {streetNew, sAAlt[4], sAAlt[5], sAAlt[6]}; //for simplicity sake, only changed street and copied other info from previous test
 			editRow(addressNew, 3, mapVD.get(sAlt)); //sends data to be edited in voter file. 3 corresponds to the index that the address begins. also sends the pointer (potentially could use NA to update gender this way if editRow() is tweaked)
 			System.out.println(Arrays.toString(lookup(mapVD.get(sAlt)))); //test print
+		}
+		
+		if (checkExpDate(sAAlt[10])) { //checks expiration date of second test, because the test isn't expired, it doesn't do anything, but it has been tested by modifying genExpDate()
+			editRow(new String[] {genExpDate()}, 10, mapVD.get(sAlt));
+			System.out.println(Arrays.toString(lookup(mapVD.get(sAlt))));
 		}
 		
 	}
