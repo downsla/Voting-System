@@ -40,6 +40,8 @@ public class TestD { //test driver class
 			Test.editRow(new String[] {Test.genExpDate()}, 10, Test.getPointerVD(sAlt));
 			System.out.println(Arrays.toString(Test.lookup(Test.getPointerVD(sAlt))));
 		}
+		
+		System.out.println(Test.getVUID(Test.getPointerVD(sAlt)));
 
 	}
 

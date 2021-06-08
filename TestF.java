@@ -77,7 +77,7 @@ public class TestF { //test class containing methods to be inherited
 		return fs;
 	}
 	
-	public static String formatRow(String[] sa) {
+	public static String formatRow(String[] sa) { //formats string array for writing to csv file
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < sa.length; i++) { //adds rest of array
 			sb.append(sa[i]).append(',');
@@ -86,7 +86,7 @@ public class TestF { //test class containing methods to be inherited
 		return sb.toString();
 	}
 	
-	public static String formatRow(String[] sa, int[]p, int b) { //formats and returns array of all info to be written to voter file
+	public static String formatRow(String[] sa, int[]p, int b) { //formats and returns array of all info to be written to file using array of max char length starting at index
 		StringBuilder sb = new StringBuilder();
 		int i;
 		for(i = 0; i < b; i++) { //puts beginning of array to start of format

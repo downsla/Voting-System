@@ -72,6 +72,23 @@ public class Test extends TestF{ //test voter class
 		return sr;
 	}
 	
+	public static String getVUID(long l) { //returns only the VUID from file (will be used by admin)
+		StringBuilder sb = new StringBuilder();
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(voterFile));
+			br.skip(l); //skips using pointer
+			for(int i = 0; i < 10; i++) { //reads 10 chars (VUID length)
+				sb.append((char)br.read());
+			}
+			br.close();
+		} catch(FileNotFoundException e) {
+			e.printStackTrace();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		return sb.toString();
+	}
+	
 	public static String[] register(String[] sa) { //registers voter using array with all necessary info to be provided (includes null spaces to be filled) and returns all voter info
 		BigInteger bi; //generates random VUID as string of 10 digits
 		int[] b = new int[] {32, 29, 27, 25, 18, 16, 15, 14, 12, 9, 2, 1}; //bits who's max is 9999999999
