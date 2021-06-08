@@ -21,43 +21,34 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
 
-public class Test {
+public class Test extends TestF{ //test voter class
 	
-	public static File voterFile;
-	public static File indexNA;
-	public static File indexVD;
-	public static HashMap<String, Long> mapNA;
-	public static HashMap<String, Long> mapVD;
-	public static Set<String> keysNA;
-	public static Set<String> keysVD;
+	private static File voterFile;
+	private static File indexNA;
+	private static File indexVD;
+	private static HashMap<String, Long> mapNA;
+	private static HashMap<String, Long> mapVD;
+	private static Set<String> keysNA;
+	private static Set<String> keysVD;
 	
-	public static String hashFunction(String data) { //unused
-		String hash = new String();
-		try {
-			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			md.update(data.getBytes());
-			byte[] digest = md.digest();
-			BigInteger bi = new BigInteger(digest);
-			hash = bi.toString(16);
-		} catch(NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		return hash;
+	public static boolean checkKeysNA(String s) { //accessor method
+		return keysNA.contains(s);
+	}
+	
+	public static boolean checkKeysVD(String s) { //accessor method
+		return keysVD.contains(s);
+	}
+	
+	public static long getPointerNA(String s) { //accessor method
+		return mapNA.get(s);
+	}
+	
+	public static long getPointerVD(String s) { //accessor method
+		return mapVD.get(s);
 	}
 	
 	public static String[] lookup(long l) { //takes pointer and returns all voter info
-		String s = new String(); //puts line from file into string
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(voterFile));
-			br.skip(l); //skips using pointer
-			s = br.readLine();
-			br.close();
-		} catch(FileNotFoundException e) {
-			e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-		String[] sa = s.split(","); //converts to array, prepares to format
+		String[] sa = readFile(l, voterFile); //puts line from file into string array, prepares to format
 		String[] sr = new String[11];
 		sr[0] = sa[0]; //adds VUID index
 		int i;
@@ -100,20 +91,13 @@ public class Test {
 	    	sr[i] = sa[i];
 	    }
 	    sr[sr.length - 1] = genExpDate(); //adds expiration date
-		long l = voterFile.length(); //saves pointer to the new registered info
-		try { //appends info to the end of the voter file
-			BufferedWriter bw = new BufferedWriter(new FileWriter(voterFile, true));
-			bw.write(formatRow(sr));
-			bw.close();
-		} catch(FileNotFoundException e) {
-			e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
+		long l = writeFile(formatRow(sr, new int[] {20, 20, 20, 20}, 1), voterFile); //saves pointer from the new registered info
 		mapNA.put(getSearchNA(sr), l); //generates both NA and VD hash maps as well as updates the serialization
 		mapVD.put(getSearchVD(sr), l);
 		saveHash(mapNA, indexNA);
 		saveHash(mapVD, indexVD);
+		keysNA = mapNA.keySet();
+		keysVD = mapVD.keySet();
 		return sr;
 	}
 	
@@ -143,52 +127,6 @@ public class Test {
 		}
 		
 	}
-	
-	public static HashMap<String, Long> loadHash(File f) { //reads hash map from file
-		HashMap<String, Long> hm = new HashMap<String, Long>();
-		if(f.length() != 0) {
-			try {
-				ObjectInputStream inStream = new ObjectInputStream(new FileInputStream(f));
-				hm = (HashMap<String, Long>) inStream.readObject();
-				inStream.close();
-			} catch(FileNotFoundException e) {
-				e.printStackTrace();
-			} catch(IOException e) {
-				e.printStackTrace();
-			} catch(ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-		return hm;
-	}
-	
-	public static void saveHash(HashMap<String, Long> hm, File f) { //saves hash map to file
-		try {
-			ObjectOutputStream outStream = new ObjectOutputStream(new FileOutputStream(f));
-			outStream.writeObject(hm);
-			outStream.close();
-		} catch(FileNotFoundException e) {
-			e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static String formatRow(String[] sa) { //formats and returns array of all info to be written to voter file
-		StringBuilder sb = new StringBuilder(sa[0]).append(',');
-		int[] p = new int[] {20, 20, 20, 20}; //max character length for pertaining indexes
-		int i;
-		for(i = 1; i < (p.length + 1); i++) { //puts correct number of empty space before string
-			char[] ch = new char[p[i - 1] - sa[i].length()];
-			Arrays.fill(ch, ' ');
-			sb.append(ch).append(sa[i]).append(','); //inserts string as well as delimiter (,)
-		}
-		for(; i < sa.length; i++) { //adds rest of array
-			sb.append(sa[i]).append(',');
-		}
-		sb.append('\n'); //adds the next line character (\n)
-		return sb.toString();
-	}
 
 	public static void editRow(String[] sa, int c, long l) { //edits an exist voter info using array of new info, the index to start overwriting, and the pointer to the voter file
 		String[] sr = new String[11];
@@ -200,47 +138,18 @@ public class Test {
 				sr[i] = sc[i];
 			}
 		}
-		String sn = formatRow(sr); //formats all new info to write to voter file
-		try { //overwrites existing line in voter file
-			RandomAccessFile raf = new RandomAccessFile(voterFile, "rw");
-			raf.seek(l);
-			raf.write(sn.getBytes());
-			raf.close();
-		} catch(FileNotFoundException e) {
-			e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
+		String sn = formatRow(sr, new int[] {20, 20, 20, 20}, 1); //formats all new info to write to voter file
+		overwriteFile(sn, l, voterFile);
 		mapNA.put(getSearchNA(sr), l); //adds new key with preexisting value to hash map that searches using updated info (VD does not need to be updated as VUID and DOB never change)
 		mapNA.remove(getSearchNA(sc)); //removes old key from NA search string using old saved lookup
 		saveHash(mapNA, indexNA); //saves updated hash map
 	}
 	
 	public static void setData() { //loads necessary global variable files and creates their hash maps and key sets
-		voterFile = new File("voters.csv");
-		if(!voterFile.exists()) { //only creates file if file does not exist
-            try {
-            	voterFile.createNewFile();
-			} catch(IOException e) {
-				e.printStackTrace();
-			}
-        }
-		indexNA = new File("indexNA.txt");
-		if(!indexNA.exists()) {
-            try {
-				indexNA.createNewFile();
-			} catch(IOException e) {
-				e.printStackTrace();
-			}
-        }
-		indexVD = new File("indexVD.txt");
-		if(!indexVD.exists()) {
-            try {
-				indexVD.createNewFile();
-			} catch(IOException e) {
-				e.printStackTrace();
-			}
-        }
+		File[] fs = setFile(new String[] {"voters.csv", "indexNA.txt", "indexVD.txt"});
+		voterFile = fs[0];
+		indexNA = fs[1];
+		indexVD = fs[2];
 		mapNA = loadHash(indexNA);
 		mapVD = loadHash(indexVD);
 		keysNA = mapNA.keySet();
@@ -256,47 +165,6 @@ public class Test {
 	public static String getSearchVD(String[] sa) { //pulls string necessary to search hash map VD from array of all voter info
 		String[] temp = new String[] {sa[0], sa[7]};
 		return String.join("", temp);
-	}
-	
-	public static void main(String[] args) { //driver file has a test case for not registered (or registered if you run twice without deleting data files) and editing users voter info		
-		setData(); //set data files
-		
-		String[] sArr = new String[11]; //creates array and populates with data for registered user
-		sArr[1] = new String("JOHN");
-		sArr[2] = new String("DOE");
-		sArr[3] = new String("1234 ROAD ST");
-		sArr[4] = new String("CITY");
-		sArr[5] = new String("TX");
-		sArr[6] = new String("123456");
-		sArr[7] = new String("01022003");
-		String s = getSearchNA(sArr); //gets string to search with
-		
-		if(!keysNA.contains(s)) { //if user isn't registered, gets other necessary info to register
-			sArr[8] = new String("M");
-			sArr[9] = new String("W");
-			sArr = register(sArr); //registers voter
-		} else { //otherwise overwrite user inputed info with array containing all stored info
-			sArr = lookup(mapNA.get(s));
-		}
-		System.out.println(Arrays.toString(sArr)); //test print
-		
-		String[] sAAlt = new String[11]; //creates array for editing address, asking only for VUID and DOB
-		sAAlt[0] = new String(sArr[0]);
-		sAAlt[7] = new String(sArr[7]);
-		String sAlt = getSearchVD(sAAlt); //gets corresponding search string
-		if(keysVD.contains(sAlt)) { //if they are registered, then allows them to update address
-			sAAlt = lookup(mapVD.get(sAlt)); //gets array of all preexisting voter info
-			String streetNew = new String("5678 ROAD ST"); //get new address
-			String[] addressNew = new String[] {streetNew, sAAlt[4], sAAlt[5], sAAlt[6]}; //for simplicity sake, only changed street and copied other info from previous test
-			editRow(addressNew, 3, mapVD.get(sAlt)); //sends data to be edited in voter file. 3 corresponds to the index that the address begins. also sends the pointer (potentially could use NA to update gender this way if editRow() is tweaked)
-			System.out.println(Arrays.toString(lookup(mapVD.get(sAlt)))); //test print
-		}
-		
-		if (checkExpDate(sAAlt[10])) { //checks expiration date of second test, because the test isn't expired, it doesn't do anything, but it has been tested by modifying genExpDate()
-			editRow(new String[] {genExpDate()}, 10, mapVD.get(sAlt));
-			System.out.println(Arrays.toString(lookup(mapVD.get(sAlt))));
-		}
-		
 	}
 
 }
