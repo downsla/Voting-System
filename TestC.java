@@ -10,6 +10,7 @@ public class TestC extends TestF{ //test candidate class
 	private static HashMap<String, Long> mapC;
 	private static Set<String> keysC;
 	private static long firstPosition;
+	private static String state;
 	
 	public static boolean checkKeysC(String s) { //accessor method
 		return keysC.contains(s);
@@ -31,8 +32,9 @@ public class TestC extends TestF{ //test candidate class
 		keysC = mapC.keySet();
 		if(candidateFile.length() == 0) { //checks if candidate file is empty
 			writeFile("this is a test\n", candidateFile); //inserts first line containing data for election, needs formatting
+			firstPosition = candidateFile.length();
 		}
-		firstPosition = candidateFile.length();
+		state = s; //saves current state
 	}
 	
 	public static void createNew(String s, int n) { //clears files for new
@@ -51,6 +53,24 @@ public class TestC extends TestF{ //test candidate class
 		mapC.put(String.format("%02d", String.valueOf(n)), l); //adds two digit key to hash map
 		saveHash(mapC, indexC);
 		keysC = mapC.keySet();
+	}
+	
+	public static void addPositionAll(String[] sa) { //used to generate all states to vote for position, only use as first position added
+		String[] sr = new String[sa.length + ((sa.length - 1) / 2)]; //increases array size to hold vote count for each candidate
+		System.arraycopy(sr, 0, sa, 0, sa.length);
+		for(int i = sa.length - 1; i < sr.length; i++) { //adds empty vote count string
+			sr[i] = "000000000";
+		}
+		String ogState = state;
+		String[] statesA = new String[] {"LS", ogState}; //returns to original saved state
+		for(int i = 0; i < 2; i++) { //number of states (for testing purposes, only 2)
+			setData(statesA[i], 1);
+			long l = writeFile(formatRow(sa), candidateFile); //saves pointer from new registered info
+			mapC.put(String.format("%02d", String.valueOf(1)), l); //adds two digit key to hash map
+			saveHash(mapC, indexC);
+			keysC = mapC.keySet();
+		}
+		
 	}
 	
 	public static void editFirstLine(String[] sa) { //overwrite data in first line, every ballot cast should update this
