@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
@@ -46,7 +48,10 @@ public class TestB extends TestF{ //test ballot class
 		keysB = mapB.keySet();
 	}
 	
-	public static void submit(String[] sa) { //need to save ballot info to tally in another file later
+	public static void submit(String[] sa, String v[]) { //need to save ballot info to tally in another file later, takes voter info
+		if (TestC.checkIfDemo()) { //if there is a demographics line, update it
+			TestC.incrementFirstLine(getDemo(v), Integer.valueOf(sa[1])); //updates demographics using presidential candidate and the voter's demographic
+		}
 		for(int i = 0; i < sa.length; i++) { //formats single digits to two
 			sa[i] = String.format("%02d", sa[i]);
 		}
@@ -60,4 +65,57 @@ public class TestB extends TestF{ //test ballot class
 		return readFile(l, ballotFile);
 	}
 
+	public static int getAge(String s) { //returns age given DOB string
+		String c = new String(new SimpleDateFormat("MMddyyyy").format(new Date())); //current date
+		char[] chB = s.toCharArray(); //separates to characters
+		char[] chC = c.toCharArray();
+		int a = Integer.valueOf(String.copyValueOf(chC, 4, 4)) - Integer.valueOf(String.copyValueOf(chB, 4, 4)); //subtracts to get year
+		int mB = Integer.valueOf(String.copyValueOf(chB, 0, 2)); //saves month for ifs
+		int mC = Integer.valueOf(String.copyValueOf(chC, 0, 2));
+		if(mC < mB) { //checks month
+			return (a - 1);
+		} else if(mC == mB) {
+			if(Integer.valueOf(String.copyValueOf(chC, 2, 2)) < Integer.valueOf(String.copyValueOf(chB, 2, 2))) { //checks day
+				return (a - 1);
+			} else {
+				return a;
+			}
+		} else {
+			return a;
+		}
+	}
+	
+	public static boolean[] getDemo(String[] sa) { //returns boolean array containing only demographic info from voter info
+		boolean[] b = new boolean[12];
+		int a = getAge(sa[7]);
+		if(18 <= a && a <= 35) {
+			b[0] = true;
+		} else if(36 <= a && a <= 65) {
+			b[1] = true;
+		} else if(66 <= a) {
+			b[2] = true;
+		}
+		if(sa[8] == "M") {
+			b[3] = true;
+		} else if(sa[8] == "W") {
+			b[4] = true;
+		} else if(sa[8] == "O") {
+			b[5] = true;
+		}
+		if(sa[9] == "N") {
+			b[6] = true;
+		} else if(sa[9] == "A") {
+			b[7] = true;
+		} else if(sa[9] == "B") {
+			b[8] = true;
+		} else if(sa[9] == "H") {
+			b[9] = true;
+		} else if(sa[9] == "P") {
+			b[10] = true;
+		} else if(sa[9] == "W") {
+			b[11] = true;
+		}
+		return b;
+	}
+	
 }

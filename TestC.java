@@ -29,7 +29,11 @@ public class TestC extends TestF{ //test candidate class
 		return (firstPosition < candidateFile.length());
 	}
 	
-	public static void setData(String s) { //loads necessary global variable files and creates their hash maps and key sets, needs max number of candidates and state
+	public static boolean checkIfDemo() { //returns true if demographics are recorded for ballot
+		return (1 < firstPosition);
+	}
+	
+	public static void setData(String s) { //loads necessary global variable files and creates their hash maps and key sets, needs state
 		File[] fs = setFile(new String[] {"candidates", "indexC"}, s); 
 		candidateFile = fs[0];
 		indexC = fs[1];
@@ -55,14 +59,14 @@ public class TestC extends TestF{ //test candidate class
 			sr[i] = "000000000";
 		}
 		long l = writeFile(formatRow(sa), candidateFile); //saves pointer from new registered info
-		mapC.put(String.format("%02d", String.valueOf(n)), l); //adds two digit key to hash map
+		mapC.put(String.valueOf(n), l); //adds two digit key to hash map
 		saveHash(mapC, indexC);
 		keysC = mapC.keySet();
 	}
 	
 	public static void addPositionAll(String[] sa) { //used to generate all states to vote for position, only use as first position added
 		int n = ((sa.length - 1) / 2); //holds number of candidates
-		String[] d = new String[(n * 5) + 1]; //creates formatted header
+		String[] d = new String[(n * 12) + 1]; //creates formatted header
 		d[0] = " "; //index 0 will not be used for easier traversal functions
 		for(int i = 1; i < n; i++) {
 			d[i] = "000000000";
@@ -78,16 +82,16 @@ public class TestC extends TestF{ //test candidate class
 		for(int i = 0; i < states.length; i++) { //number of states (for testing purposes, only 2)
 			setData(states[i]);
 			long l = writeFile(formatRow(sa), candidateFile); //saves pointer from new registered info
-			mapC.put(String.format("%02d", String.valueOf(1)), l); //adds two digit key to hash map
+			mapC.put(String.valueOf(1), l); //adds two digit key to hash map
 			saveHash(mapC, indexC);
 			keysC = mapC.keySet();
 		}
 		setData(ogState);
 	}
 	
-	public static void incrementFirstLine(boolean[] ba) { //overwrite data in first line using boolean, every ballot cast should update this
+	public static void incrementFirstLine(boolean[] ba, int n) { //overwrite data in first line using boolean array and candidate index, every ballot cast should update this
 		String[] sa = readFile(0, candidateFile);
-		for(int i = 1; i < sa.length; i++) {
+		for(int i = ((12 * (n - 1)) - 1); i < ba.length; i++) { //starts at voted candidate's position
 			if(ba[i]) { //increment if true in given boolean array
 				Integer d = Integer.valueOf(sa[i]);
 				d++;
@@ -97,14 +101,14 @@ public class TestC extends TestF{ //test candidate class
 		overwriteFile(formatRow(sa), 0, candidateFile); //overwrites header
 	}
 	
-	public static String pullCandidate(String n, String s) { //pulls candidate using ballot index then value
-		String[] sa = readFile(mapC.get(n), candidateFile);
+	public static String pullCandidate(String s, int n) { //pulls candidate using ballot index then value
+		String[] sa = readFile(mapC.get(String.valueOf(n)), candidateFile);
 		return sa[Integer.valueOf(s) * 2];
 	}
 	
-	public static int candidateNum(String n) { //gets number of candidates that are running for a position via the line in file
-		String[] sa = readFile(mapC.get(n), candidateFile);
+	public static int candidateNum(int n) { //gets number of candidates that are running for a position via the line in file, needed for ballot generation
+		String[] sa = readFile(mapC.get(String.valueOf(n)), candidateFile);
 		return ((sa.length - 1) / 3);
 	}
 	
-}
+} 

@@ -142,7 +142,6 @@ public class Test extends TestF{ //test voter class
 		} else {
 			return true;
 		}
-		
 	}
 
 	public static void editRow(String[] sa, int c, long l) { //edits an exist voter info using array of new info, the index to start overwriting, and the pointer to the voter file
