@@ -22,6 +22,7 @@ public class Ballot extends Database {
 	}
 
 	public static void clear(String state) { //clears files, only to be called from Candidate.clear()
+		loadData(state);
 		ballotFile.delete();
 		index.delete();
 		loadData(state);

@@ -136,12 +136,12 @@ public class Database {
 		}
 	}
 	
-	public static String getFirstPartOfLine(int length, long l, File f) { //returns only the VUID from file (will be used by admin)
+	public static String getFirstPartOfLine(int length, long l, File f) { //returns chars from beginning of line in file.
 		StringBuilder sb = new StringBuilder();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(f));
 			br.skip(l); //skips using pointer
-			for(int i = 0; i < length; i++) { //reads 10 chars (VUID length)
+			for(int i = 0; i < length; i++) { //reads chars
 				sb.append((char)br.read());
 			}
 			br.close();
