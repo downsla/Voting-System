@@ -10,28 +10,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.RandomAccessFile;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class TestF { //test class containing methods to be inherited
-	
-	public static String hashFunction(String data) { //unused hashCode
-		String hash = new String();
-		try {
-			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			md.update(data.getBytes());
-			byte[] digest = md.digest();
-			BigInteger bi = new BigInteger(digest);
-			hash = bi.toString(16);
-		} catch(NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		return hash;
-	}
-	
+public class Database {
+
 	public static HashMap<String, Long> loadHash(File f) { //reads hash map from file
 		HashMap<String, Long> hm = new HashMap<String, Long>();
 		if(f.length() != 0) {
@@ -61,14 +44,14 @@ public class TestF { //test class containing methods to be inherited
 			e.printStackTrace();
 		}
 	}
-	
-	public static File[] setFile(String[] sa, String s) { //appends state to file name
-		StringBuilder[] sba = new StringBuilder[] {new StringBuilder(sa[0]), new StringBuilder(sa[1])}; //makes file in accordance with state
-		sba[0].append("-" + s + ".csv");
-		sba[1].append("-" + s + ".txt");
+	//
+	public static File[] setFiles(String[] fileNames, String stateAbbr) { //appends state to file name
+		StringBuilder[] sba = new StringBuilder[] {new StringBuilder(fileNames[0]), new StringBuilder(fileNames[1])}; //makes file in accordance with state
+		sba[0].append("-" + stateAbbr + ".csv");
+		sba[1].append("-" + stateAbbr + ".txt");
 		return setFile(new String[] {sba[0].toString(), sba[1].toString()});
 	}
-	
+	//public state File[] setFiles(String[] fileNames) {
 	public static File[] setFile(String[] sa) { //loads files from input array
 		File[] fs = new File[sa.length];
 		for(int i = 0; i < sa.length; i++) {
@@ -83,34 +66,34 @@ public class TestF { //test class containing methods to be inherited
 		}
 		return fs;
 	}
-	
-	public static String formatRow(String[] sa) { //formats string array for writing to csv file
+
+	public static String formatLine(String[] info) { //formats string array for writing to csv file
 		StringBuilder sb = new StringBuilder();
-		for(int i = 0; i < sa.length; i++) { //adds rest of array
-			sb.append(sa[i]).append(',');
+		for(int i = 0; i < info.length; i++) { //adds rest of array
+			sb.append(info[i]).append(',');
 		}
 		sb.append('\n'); //adds the next line character (\n)
 		return sb.toString();
 	}
-	
-	public static String formatRow(String[] sa, int[]p, int b) { //formats and returns array of all info to be written to file using array of max char length starting at index
+
+	public static String formatLine(String[] info, int[] maxCharLength, int startIndex) { //formats and returns array of all info to be written to file using array of max char length starting at index
 		StringBuilder sb = new StringBuilder();
 		int i;
-		for(i = 0; i < b; i++) { //puts beginning of array to start of format
-			sb.append(sa[i]).append(',');
+		for(i = 0; i < startIndex; i++) { //puts beginning of array to start of format
+			sb.append(info[i]).append(',');
 		}
-		for(; i < (p.length + b); i++) { //puts correct number of empty space before string
-			char[] ch = new char[p[i - b] - sa[i].length()];
+		for(; i < (maxCharLength.length + startIndex); i++) { //puts correct number of empty space before string
+			char[] ch = new char[maxCharLength[i - startIndex] - info[i].length()];
 			Arrays.fill(ch, ' ');
-			sb.append(ch).append(sa[i]).append(','); //inserts string as well as delimiter (,)
+			sb.append(ch).append(info[i]).append(','); //inserts string as well as delimiter (,)
 		}
-		for(; i < sa.length; i++) { //adds rest of array
-			sb.append(sa[i]).append(',');
+		for(; i < info.length; i++) { //adds rest of array
+			sb.append(info[i]).append(',');
 		}
 		sb.append('\n'); //adds the next line character (\n)
 		return sb.toString();
 	}
-	
+
 	public static long writeFile(String s, File f) { //writes given string to given file and returns pointer
 		long l = f.length(); //saves pointer to the new submitted info
 		try { //appends info to the end of the ballot file
@@ -124,7 +107,7 @@ public class TestF { //test class containing methods to be inherited
 		}
 		return l;
 	}
-	
+
 	public static String[] readFile(long l, File f) { //reads line from given file at given pointer and returns array
 		String s = new String();
 		try {
