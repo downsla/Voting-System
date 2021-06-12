@@ -13,7 +13,7 @@ public class Ballot extends Database {
 		return keys.contains(key);
 	}
 
-	public static long getValue(String key) { //true if key exists
+	public static long getKeyVal(String key) { //true if key exists
 		return map.get(key);
 	}
 
@@ -35,15 +35,18 @@ public class Ballot extends Database {
 		keys = map.keySet();
 	}
 
-	public static void submit(String[] voterInfo) { //need to save ballot info to tally in another file later, takes voter info
+	public static void submit(int[] ballotInfo, String[] voterInfo) { //need to save ballot info to tally in another file later, takes voter info
 		if (Candidate.isPresElec()) { //if there is a demographics line, update it
-			Candidate.incrementDemo(Voter.getVoterDemo(voterInfo), Integer.valueOf(voterInfo[1])); //updates demographics using presidential candidate and the voter's demographic
+			Candidate.incrDemo(Voter.getDemo(voterInfo), ballotInfo[0]); //updates demographics using presidential candidate and the voter's demographic
 		}
-		for(int i = 0; i < voterInfo.length; i++) { //formats single digits to two
-			voterInfo[i] = String.format("%02d", voterInfo[i]);
+		String[] b = new String[ballotInfo.length + 1];
+		b[0] = voterInfo[0]; //sets VUID
+		for(int i = 1; i < b.length; i++) { //formats single digits to two
+			b[i] = String.format("%02d", ballotInfo[i - 1]);
+			Candidate.incrCandVote(b[i], i); //increments candidate's vote counter
 		}
-		long l = writeFile(formatLine(voterInfo), ballotFile); //saves pointer from new registered info
-		map.put(voterInfo[0], l); //generates hash maps as well as updates the serialization
+		long l = writeFile(formatLine(b), ballotFile); //saves pointer from new registered info
+		map.put(b[0], l); //generates hash maps as well as updates the serialization
 		saveHash(map, index);
 		keys = map.keySet();
 	}

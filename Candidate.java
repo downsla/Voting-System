@@ -10,11 +10,11 @@ public class Candidate extends Database {
 	private static String currentState;
 	private static String[] statesList;
 
-	public static int numPositions() { //number of positions
+	public static int numPos() { //number of positions
 		return map.size();
 	}
 
-	public static long getValue(String key) { //true if key exists
+	public static long getKeyVal(String key) { //true if key exists
 		return map.get(key);
 	}
 
@@ -23,7 +23,7 @@ public class Candidate extends Database {
 	}
 	
 	public static boolean isStateValid(String voterState) {
-		if(voterState == currentState) {
+		if(voterState.equals(currentState)) {
 			return true;
 		} else {
 			return false;
@@ -42,71 +42,99 @@ public class Candidate extends Database {
 		if(candidateFile.length() == 0) { //checks if candidate file is empty
 			writeFile("\n", candidateFile); //inserts first line containing data for election
 			secondLineVal = candidateFile.length();
+		} else if(getFirstPartOfLine(1, 0, candidateFile).charAt(0) != '\n') { //checks if demographic line is present by reading file upon reload
+			secondLineVal = Long.parseLong(getFirstPartOfLine(9, 0, candidateFile));
 		}
 		currentState = state; //saves current state
 	}
 
-	public static void clear(String state) { //clears files for new creation
+	public static void clear() { //clears files for new creation
 		candidateFile.delete();
-		Ballot.clear(state);
-		loadData(state);
+		Ballot.clear(currentState);
+		loadData(currentState);
 	}
 
-	public static void addPosition(String[] positionInfo) { //adds position to candidate file, must be done after president if applicable
-		String[] sr = new String[positionInfo.length + ((positionInfo.length - 1) / 2)]; //increases array size to hold vote count for each candidate
-		System.arraycopy(sr, 0, positionInfo, 0, positionInfo.length);
-		for(int i = positionInfo.length - 1; i < sr.length; i++) { //adds empty vote count string
-			sr[i] = "000000000";
+	public static void addPos(String[] positionInfo) { //adds position to candidate file, must be done after president if applicable
+		String[] sa = new String[positionInfo.length + ((positionInfo.length - 1) / 2)]; //increases array size to hold vote count for each candidate
+		System.arraycopy(positionInfo, 0, sa, 0, positionInfo.length);
+		for(int i = positionInfo.length; i < sa.length; i++) { //adds empty vote count string
+			sa[i] = "000000000";
 		}
-		long l = writeFile(formatLine(positionInfo), candidateFile); //saves pointer from new registered info
-		map.put(String.valueOf(numPositions() + 1), l); //adds two digit key to hash map
+		long l = writeFile(formatLine(sa), candidateFile); //saves pointer from new registered info
+		map.put(String.valueOf(numPos() + 1), l); //adds two digit key to hash map
 		saveHash(map, index);
 	}
 
-	public static void addPresident(String[] positionInfo) { //used to generate all states to vote for president, only use as first position added
+	public static void addPres(String[] positionInfo) { //used to generate all states to vote for president, only use as first position added
 		int n = ((positionInfo.length - 1) / 2); //holds number of candidates
 		String[] d = new String[(n * 12) + 1]; //creates formatted header
-		d[0] = " "; //index 0 will not be used for easier traversal functions
-		for(int i = 1; i < n; i++) {
+		for(int i = 0; i < d.length; i++) {
 			d[i] = "000000000";
 		}
-		overwriteFile(formatLine(d), 0, candidateFile); //inserts first line containing data for election
-		secondLineVal = candidateFile.length(); //updates pointer
-		String[] sr = new String[positionInfo.length + n]; //increases array size to hold vote count for each candidate
-		System.arraycopy(sr, 0, positionInfo, 0, positionInfo.length);
-		for(int i = positionInfo.length - 1; i < sr.length; i++) { //adds empty vote count string
-			sr[i] = "000000000";
+		String[] sa = new String[positionInfo.length + n]; //increases array size to hold vote count for each candidate
+		System.arraycopy(positionInfo, 0, sa, 0, positionInfo.length);
+		for(int i = positionInfo.length; i < sa.length; i++) { //adds empty vote count string
+			sa[i] = "000000000";
 		}
 		String ogState = currentState; //returns to original saved state
 		for(int i = 0; i < statesList.length; i++) { //number of states (for testing purposes, only 2)
 			loadData(statesList[i]);
-			long l = writeFile(formatLine(positionInfo), candidateFile); //saves pointer from new registered info
+			overwriteFile(formatLine(d), 0, candidateFile); //inserts first line containing data for election
+			secondLineVal = candidateFile.length();
+			d[0] = String.format("%09d", secondLineVal); //stores secondLineVal in file
+			overwriteFile(d[0], 0, candidateFile);
+			long l = writeFile(formatLine(sa), candidateFile); //saves pointer from new registered info
 			map.put(String.valueOf(1), l); //adds two digit key to hash map
 			saveHash(map, index);
 		}
 		loadData(ogState);
+		secondLineVal = Long.parseLong(getFirstPartOfLine(9, 0, candidateFile)); //gets value from file
 	}
 
-	public static void incrementDemo(boolean[] voterDemo, int candidateNum) { //overwrite data in first line using boolean array and candidate index, every ballot cast should update this
+	public static void incrDemo(boolean[] voterDemo, int candNum) { //overwrite data in first line using boolean array and candidate index, every ballot cast should update this
 		String[] sa = readFile(0, candidateFile);
-		for(int i = ((12 * (candidateNum - 1)) - 1); i < voterDemo.length; i++) { //starts at voted candidate's position
+		int n = ((12 * (candNum)) - 11);
+		for(int i = 0; i < voterDemo.length; i++) { //starts at voted candidate's position
 			if(voterDemo[i]) { //increment if true in given boolean array
-				Integer d = Integer.valueOf(sa[i]);
+				Integer d = Integer.valueOf(sa[n + i]);
 				d++;
-				sa[i] = String.format("%09d", String.valueOf(d)); //updates and formats string array
+				sa[n + i] = String.format("%09d", d); //updates and formats string array
 			}
 		}
 		overwriteFile(formatLine(sa), 0, candidateFile); //overwrites header
 	}
-
-	public static String getCandidate(String selectionNum, int ballotIndex) { //pulls candidate using ballot index then value
+	
+	public static void incrCandVote(String selectedNum, int ballotIndex) {
+		long l = map.get(String.valueOf(ballotIndex));
+		String[] sa = readFile(l, candidateFile);
+		int c = sa.length - ((sa.length - 1) / 3) + Integer.valueOf(selectedNum) - 1;
+		sa[c] = String.format("%09d", (Integer.valueOf(sa[c]) + 1));
+		overwriteFile(formatLine(sa), l, candidateFile);
+	}
+	
+	public static String[] lookup(String selectedNum, int ballotIndex) { //pulls all info pertaining to single candidate
 		String[] sa = readFile(map.get(String.valueOf(ballotIndex)), candidateFile);
-		return sa[Integer.valueOf(selectionNum) * 2];
+		String[] sr = new String[4];
+		sr[0] = sa[0];
+		int sn = Integer.valueOf(selectedNum);
+		sr[1] = sa[(sn * 2) - 1];
+		sr[2] = sa[sn * 2];
+		sr[3] = sa[sa.length - ((sa.length - 1) / 3) + sn - 1];
+		return sr;
 	}
 
-	public static int numberOfCandidates(int positionLineNum) { //gets number of candidates that are running for a position via the line in file, needed for ballot generation
+	public static int numberOfCand(int positionLineNum) { //gets number of candidates that are running for a position via the line in file, needed for ballot generation
 		String[] sa = readFile(map.get(String.valueOf(positionLineNum)), candidateFile);
 		return ((sa.length - 1) / 3);
+	}
+	
+	public static Integer[] getDemoLine() { //returns first line demographics
+		String[] sa = readFile(0, candidateFile);
+		Integer[] ia = new Integer[sa.length - 1];
+		for(int i = 0; i < ia.length; i++) {
+			ia[i] = Integer.valueOf(sa[i + 1]);
+		}
+		return ia;
 	}
 	
 } 

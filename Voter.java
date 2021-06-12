@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,11 +30,11 @@ public class Voter extends Database{
 		return keysVD.contains(key);
 	}
 
-	public static long getValueNAD(String key) { //gets pointer in file from key
+	public static long getKeyValNAD(String key) { //gets pointer in file from key
 		return mapNAD.get(key);
 	}
 
-	public static long getValueVD(String key) { //gets pointer in file from key
+	public static long getKeyValVD(String key) { //gets pointer in file from key
 		return mapVD.get(key);
 	}
 	
@@ -63,20 +64,7 @@ public class Voter extends Database{
 	}
 	
 	public static String getVUID(long l) { //returns only the VUID from file (will be used by admin)
-		StringBuilder sb = new StringBuilder();
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(voterFile));
-			br.skip(l); //skips using pointer
-			for(int i = 0; i < 10; i++) { //reads 10 chars (VUID length)
-				sb.append((char)br.read());
-			}
-			br.close();
-		} catch(FileNotFoundException e) {
-			e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-		return sb.toString();
+		return getFirstPartOfLine(10, l, voterFile);
 	}
 
 	public static String[] register(String[] voterInfo) { //registers voter using array with all necessary info to be provided (includes null spaces to be filled) and returns all voter info
@@ -92,20 +80,20 @@ public class Voter extends Database{
 				break;
 			}
 	    }
-	    String[] sr = new String[11];
-	    sr[0] = String.format("%010d", bi); //formats with leading zeros to be 10 digits long
-	    for(int i = 1; i < (sr.length - 1); i++) { //adds inputed array of info
-	    	sr[i] = voterInfo[i];
+	    String[] sa = new String[11];
+	    sa[0] = String.format("%010d", bi); //formats with leading zeros to be 10 digits long
+	    for(int i = 1; i < (sa.length - 1); i++) { //adds inputed array of info
+	    	sa[i] = voterInfo[i];
 	    }
-	    sr[sr.length - 1] = genExpDate(); //adds expiration date
-		long l = writeFile(formatLine(sr, new int[] {20, 20, 20, 20}, 1), voterFile); //saves pointer from the new registered info
-		mapNAD.put(getSearchKeyNAD(sr), l); //generates both NA and VD hash maps as well as updates the serialization
-		mapVD.put(getSearchKeyVD(sr), l);
+	    sa[sa.length - 1] = genExpDate(); //adds expiration date
+		long l = writeFile(formatLine(sa, new int[] {20, 20, 20, 20}, 1), voterFile); //saves pointer from the new registered info
+		mapNAD.put(getSearchKeyNAD(sa), l); //generates both NA and VD hash maps as well as updates the serialization
+		mapVD.put(getSearchKeyVD(sa), l);
 		saveHash(mapNAD, indexNAD);
 		saveHash(mapVD, indexVD);
 		keysNAD = mapNAD.keySet();
 		keysVD = mapVD.keySet();
-		return sr;
+		return sa;
 	}
 	
 	public static String genExpDate() { //generates expiration date string
@@ -162,7 +150,7 @@ public class Voter extends Database{
 		}
 	}
 
-	public static boolean[] getVoterDemo(String[] voterInfo) { //returns boolean array containing only demographic info from voter info
+	public static boolean[] getDemo(String[] voterInfo) { //returns boolean array containing only demographic info from voter info
 		boolean[] b = new boolean[12];
 		int a = getAge(voterInfo[7]);
 		if(18 <= a && a <= 35) {
@@ -172,45 +160,46 @@ public class Voter extends Database{
 		} else if(66 <= a) {
 			b[2] = true;
 		}
-		if(voterInfo[8] == "M") {
+		if(voterInfo[8].equals("M")) {
 			b[3] = true;
-		} else if(voterInfo[8] == "W") {
+		} else if(voterInfo[8].equals("W")) {
 			b[4] = true;
-		} else if(voterInfo[8] == "O") {
+		} else if(voterInfo[8].equals("O")) {
 			b[5] = true;
 		}
-		if(voterInfo[9] == "N") {
+		if(voterInfo[9].equals("N")) {
 			b[6] = true;
-		} else if(voterInfo[9] == "A") {
+		} else if(voterInfo[9].equals("A")) {
 			b[7] = true;
-		} else if(voterInfo[9] == "B") {
+		} else if(voterInfo[9].equals("B")) {
 			b[8] = true;
-		} else if(voterInfo[9] == "H") {
+		} else if(voterInfo[9].equals("H")) {
 			b[9] = true;
-		} else if(voterInfo[9] == "P") {
+		} else if(voterInfo[9].equals("P")) {
 			b[10] = true;
-		} else if(voterInfo[9] == "W") {
+		} else if(voterInfo[9].equals("W")) {
 			b[11] = true;
 		}
 		return b;
 	}
 	
-	public static void editLine(String[] voterInfo, int startIndex, long l) { //edits an exist voter info using array of new info, the index to start overwriting, and the pointer to the voter file
-		String[] sr = new String[11];
+	public static String[] editLine(String[] voterInfo, int startIndex, long l) { //edits an exist voter info using array of new info, the index to start overwriting, and the pointer to the voter file
+		String[] sa = new String[11];
 		String[] sc = lookup(l); //gets current all voter info
-		for(int i = 0; i < sr.length; i++) { //inserts new info
+		for(int i = 0; i < sa.length; i++) { //inserts new info
 			if(startIndex <= i && i < (startIndex + voterInfo.length)) {
-				sr[i] = voterInfo[i - startIndex];
+				sa[i] = voterInfo[i - startIndex];
 			} else {
-				sr[i] = sc[i];
+				sa[i] = sc[i];
 			}
 		}
-		String sn = formatLine(sr, new int[] {20, 20, 20, 20}, 1); //formats all new info to write to voter file
+		String sn = formatLine(sa, new int[] {20, 20, 20, 20}, 1); //formats all new info to write to voter file
 		overwriteFile(sn, l, voterFile);
-		mapNAD.put(getSearchKeyNAD(sr), l); //adds new key with preexisting value to hash map that searches using updated info (VD does not need to be updated as VUID and DOB never change)
+		mapNAD.put(getSearchKeyNAD(sa), l); //adds new key with preexisting value to hash map that searches using updated info (VD does not need to be updated as VUID and DOB never change)
 		mapNAD.remove(getSearchKeyNAD(sc)); //removes old key from NA search string using old saved lookup
 		saveHash(mapNAD, indexNAD); //saves updated hash map
 		keysNAD = mapNAD.keySet();
+		return sa;
 	}
 	
 	public static void loadData() { //loads necessary global variable files and creates their hash maps and key sets
