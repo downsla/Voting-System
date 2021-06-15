@@ -86,7 +86,7 @@ public class Voter extends Database{
 	    	sa[i] = voterInfo[i];
 	    }
 	    sa[sa.length - 1] = genExpDate(); //adds expiration date
-		long l = writeFile(formatLine(sa, new int[] {20, 20, 20, 20}, 1), voterFile); //saves pointer from the new registered info
+		long l = writeFile(formatLine(sa, new int[] {20, 20, 40, 20}, 1), voterFile); //saves pointer from the new registered info
 		mapNAD.put(getSearchKeyNAD(sa), l); //generates both NA and VD hash maps as well as updates the serialization
 		mapVD.put(getSearchKeyVD(sa), l);
 		saveHash(mapNAD, indexNAD);

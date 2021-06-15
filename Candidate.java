@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Candidate extends Database {
@@ -50,6 +51,7 @@ public class Candidate extends Database {
 
 	public static void clear() { //clears files for new creation
 		candidateFile.delete();
+		index.delete();
 		Ballot.clear(currentState);
 		loadData(currentState);
 	}
@@ -84,7 +86,7 @@ public class Candidate extends Database {
 			d[0] = String.format("%09d", secondLineVal); //stores secondLineVal in file
 			overwriteFile(d[0], 0, candidateFile);
 			long l = writeFile(formatLine(sa), candidateFile); //saves pointer from new registered info
-			map.put(String.valueOf(1), l); //adds two digit key to hash map
+			map.put(String.valueOf(1), l); //adds digit key to hash map
 			saveHash(map, index);
 		}
 		loadData(ogState);
@@ -113,7 +115,7 @@ public class Candidate extends Database {
 	}
 	
 	public static String[] lookup(String selectedNum, int ballotIndex) { //pulls all info pertaining to single candidate
-		String[] sa = readFile(map.get(String.valueOf(ballotIndex)), candidateFile);
+		String[] sa = getPosLine(ballotIndex);
 		String[] sr = new String[4];
 		sr[0] = sa[0];
 		int sn = Integer.valueOf(selectedNum);
@@ -122,18 +124,35 @@ public class Candidate extends Database {
 		sr[3] = sa[sa.length - ((sa.length - 1) / 3) + sn - 1];
 		return sr;
 	}
-
-	public static int numberOfCand(int positionLineNum) { //gets number of candidates that are running for a position via the line in file, needed for ballot generation
-		String[] sa = readFile(map.get(String.valueOf(positionLineNum)), candidateFile);
-		return ((sa.length - 1) / 3);
+	
+	public static String[][] getAllCand(String[] posLine) { //returns all candidates info for position, needs position line and number of candidates
+		int n = ((posLine.length - 1) / 3);
+		String[][] sr = new String[n][3];
+		for(int i = 0; i < n; i++) {
+			sr[i][0] = posLine[0];
+			sr[i][1] = posLine[((i + 1) * 2) - 1];
+			sr[i][2] = posLine[(i + 1) * 2];
+		}
+		return sr;
 	}
 	
-	public static Integer[] getDemoLine() { //returns first line demographics
-		String[] sa = readFile(0, candidateFile);
-		Integer[] ia = new Integer[sa.length - 1];
-		for(int i = 0; i < ia.length; i++) {
-			ia[i] = Integer.valueOf(sa[i + 1]);
+	public static String[] getPosLine(int posLineNum) {
+		String[] sa = readFile(map.get(String.valueOf(posLineNum)), candidateFile);
+		return sa;
+	}
+	
+	public static Integer[] getDemoLine() { //returns all demographics from all state files
+		String ogState = currentState; //saves original state
+		Integer[] ia = new Integer[readFile(0, candidateFile).length - 1];
+		Arrays.fill(ia, 0);
+		for(int i = 0; i < statesList.length; i++) { //number of states (for testing purposes, only 2)
+			loadData(statesList[i]);
+			String[] sa = readFile(0, candidateFile);
+			for(int j = 0; j < ia.length; j++) {
+				ia[j] += Integer.valueOf(sa[j + 1]);
+			}
 		}
+		loadData(ogState);
 		return ia;
 	}
 	
