@@ -43,25 +43,51 @@ public class TestDriver {
 		Candidate.addPres(new String[] {"President/Vice", "R", "James Robert and Jimmy Kriss", "L", "Elisha Bertha and Catherine Kate"});
 		Candidate.addPos(new String[] {"Senator", "R", "Jeremy Bently", "R", "Helda Cameron"});
 		
-		int posCount = Candidate.numPos();
+		int posCount = Candidate.getPosNum();
 		if(0 < posCount) { //checks if there are any positions to cast ballot for
 			System.out.println("\nchoices:");
 			for(int i = 1; i < (posCount + 1); i++) { //loops positions, shifted up 1
 				String[][] candidates = Candidate.getAllCand(i);
-				System.out.println("\t" + candidates[0][0] + ":");
+				System.out.println("\t" + Arrays.toString(candidates[0]));
 				for(int j = 1; j < candidates.length; j++) {
-					System.out.println("\t\t" + Arrays.toString(candidates[j]));
+					System.out.println("\t" + Arrays.toString(candidates[j]));
 				}
+				System.out.println();
 			}
 			Ballot.submit(new int[] {1, 2}, voterInfo); //votes for position 1 candidate 1 and position 2 candidate 2
 			if(Ballot.checkIfBallots()) { //checks that there are ballots
 				String[] ballotInfo = Ballot.lookup(Ballot.getKeyVal(Voter.getVUID(locInFile))); //uses saved searchKey for testing, admin would have to look this key up using Voter.lookup()
-				System.out.println("\nballot:");
+				System.out.println("ballot:");
 				for(int i = 1; i < ballotInfo.length; i++) { //loops through ballot
 					System.out.println("\t" + Arrays.toString(Candidate.lookup(ballotInfo[i], i)));
 				}
 				if(Candidate.isPresElec()) { //checks if it is a presidential election
-					System.out.println("\n" + "demographics: " + Arrays.toString(Candidate.getDemoLine())); //test prints demographics
+					System.out.println("\n" + "stats: "); //test prints demographics
+					
+					String[][] presidents = Candidate.getAllPresStats();
+					System.out.println("\t" + Arrays.toString(presidents[0]));
+					for(int j = 1; j < presidents.length; j++) {
+						System.out.println("\t" + Arrays.toString(presidents[j]));
+					}
+					
+					System.out.println();
+					for(int i = 2; i < (posCount + 1); i++) { 
+						String[][] candidates = Candidate.getAllCandStats(i);
+						System.out.println("\t" + Arrays.toString(candidates[0]));
+						for(int j = 1; j < candidates.length; j++) {
+							System.out.println("\t" + Arrays.toString(candidates[j]));
+						}
+						System.out.println();
+					}
+				} else {
+					for(int i = 1; i < (posCount + 1); i++) { 
+						String[][] candidates = Candidate.getAllCandStats(i);
+						System.out.println("\t" + Arrays.toString(candidates[0]));
+						for(int j = 1; j < candidates.length; j++) {
+							System.out.println("\t" + Arrays.toString(candidates[j]));
+						}
+						System.out.println();
+					}
 				}
 			}
 		}
