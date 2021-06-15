@@ -125,13 +125,14 @@ public class Candidate extends Database {
 		return sr;
 	}
 	
-	public static String[][] getAllCand(String[] posLine) { //returns all candidates info for position, needs position line and number of candidates
+	public static String[][] getAllCand(int posLineNum) { //returns all candidates info for position, needs position line and number of candidates
+		String [] posLine = getPosLine(posLineNum);
 		int n = ((posLine.length - 1) / 3);
-		String[][] sr = new String[n][3];
-		for(int i = 0; i < n; i++) {
-			sr[i][0] = posLine[0];
-			sr[i][1] = posLine[((i + 1) * 2) - 1];
-			sr[i][2] = posLine[(i + 1) * 2];
+		String[][] sr = new String[n + 1][2];
+		sr[0][0] = posLine[0];
+		for(int i = 1; i < n + 1; i++) {
+			sr[i][0] = posLine[(i * 2) - 1];
+			sr[i][1] = posLine[i * 2];
 		}
 		return sr;
 	}
