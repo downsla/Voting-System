@@ -40,6 +40,7 @@ public class TestDriver {
 			System.out.println("voterInfo: " + Arrays.toString(voterInfo)); //test print
 		}
 		Candidate.setStatesList(new String[] {"TX", "LS"}); //only will do two states for testing
+		Candidate.setElecList(new Integer[] {38, 8});
 		Candidate.addPres(new String[] {"President/Vice", "R", "James Robert and Jimmy Kriss", "L", "Elisha Bertha and Catherine Kate"});
 		Candidate.addPos(new String[] {"Senator", "R", "Jeremy Bently", "R", "Helda Cameron"});
 		
@@ -79,6 +80,16 @@ public class TestDriver {
 						}
 						System.out.println();
 					}
+					System.out.println("winners: ");
+					String[][] electorial = Candidate.getElecVotes(presidents);
+					for(int i = 0; i < electorial.length; i++) { 
+						System.out.println("\t" + Arrays.toString(electorial[i]));
+					}
+					System.out.println("\n\t" + Candidate.getPresWin(electorial));
+					for(int i = 2; i < (posCount + 1); i++) { 
+						String[][] candidates = Candidate.getAllCandStats(i);
+						System.out.println("\t" + Candidate.getCandWin(candidates));
+					}
 				} else {
 					for(int i = 1; i < (posCount + 1); i++) { 
 						String[][] candidates = Candidate.getAllCandStats(i);
@@ -86,6 +97,11 @@ public class TestDriver {
 						for(int j = 1; j < candidates.length; j++) {
 							System.out.println("\t" + Arrays.toString(candidates[j]));
 						}
+						System.out.println();
+					}
+					for(int i = 1; i < (posCount + 1); i++) { 
+						String[][] candidates = Candidate.getAllCandStats(i);
+						System.out.println("\t" + Candidate.getCandWin(candidates));
 						System.out.println();
 					}
 				}

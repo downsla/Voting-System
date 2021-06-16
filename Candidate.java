@@ -10,6 +10,7 @@ public class Candidate extends Database {
 	private static long secondLineVal;
 	private static String currentState;
 	private static String[] statesList;
+	private static Integer[] elecList;
 
 	public static int getPosNum() { //number of positions
 		return map.size();
@@ -25,6 +26,10 @@ public class Candidate extends Database {
 
 	public static void setStatesList(String[] states) { //mutator method, used to set list of all applicable states
 		statesList = states;
+	}
+	
+	public static void setElecList(Integer[] elecVotes) { //mutator method, used to set list of all applicable states
+		elecList = elecVotes;
 	}
 	
 	public static boolean isStateValid(String voterState) {
@@ -211,12 +216,12 @@ public class Candidate extends Database {
 		String[][] sDemo = convertToPercent(demo, t);
 		String[][] sVC = convertToPercent(vc, t);
 		String[] temp = new String[]{cand[0][0], cand[0][1], 
-				"18-35 years old", "36-65 years old", "65+ years old", 
+				"18 to 35 years", "36 to 65 years", "65 years and over", 
 				"Male", "Female", "Other", 
 				"American Indian or Alaska Native", "Asian", "Black or African American", "Hispanic or Latinx", "Native Hawaiian or Other Pacific Islander", "White"};
 		System.arraycopy(temp, 0, stats[0], 0, temp.length);
 		System.arraycopy(statesList, 0, stats[0], 14, statesList.length);
-		String[] temp2 = new String[] {"Votes", "Percentage"};
+		String[] temp2 = new String[] {"Votes", "Percent"};
 		System.arraycopy(temp2, 0, stats[0], (14 + statesList.length), temp2.length);
 		for(int i = 1; i < stats.length; i++) {
 			int ix = 0;
@@ -234,7 +239,7 @@ public class Candidate extends Database {
 	}
 	
 	public static String getPercent(Integer i, Integer t) {
-		return (String.valueOf((i / t) * 100) + "%");
+		return (String.format("%.1f", ((double) i / t) * 100));
 	}
 	
 	public static String[][] convertToPercent(Integer[][] iaa, int t) {
@@ -245,6 +250,55 @@ public class Candidate extends Database {
 			}
 		}
 		return saa;
+	}
+	
+	public static String[][] getElecVotes(String[][] stats) {
+		String[][] sr = new String[stats.length][2];
+		double[] max = new double[statesList.length];
+		int[] ix = new int[statesList.length];
+		Arrays.fill(max, 0);
+		sr[0] = new String[] {stats[0][0], "Electoral Votes"};
+		for(int i = 1; i < stats.length; i++) {
+			for(int j = 0; j < statesList.length; j++) {
+				double temp = Double.parseDouble(stats[i][j + 14]);
+				if(max[j] < temp) {
+					max[j] = temp;
+					ix[i] = i;
+				}
+			}
+			sr[i][0] = stats[i][0];
+			sr[i][1] = "0";
+		}
+		for(int i = 1; i < statesList.length; i++) {
+			sr[ix[i]][1] = String.valueOf(Integer.valueOf(sr[ix[i]][1]) + elecList[i - 1]);
+		}
+		return sr;
+	}
+	
+	public static String getCandWin(String[][] candStats) {
+		Integer max = 0;
+		int ix = 0;
+		for(int i = 1; i < candStats.length; i++) {
+			Integer temp = Integer.valueOf(candStats[i][2]);
+			if(max < temp) {
+				max += temp;
+				ix = i;
+			}
+		}
+		return new String(candStats[ix][0] + " wins " + candStats[0][0]);
+	}
+	
+	public static String getPresWin(String[][] elecVotes) {
+		Integer max = 0;
+		int ix = 0;
+		for(int i = 1; i < elecVotes.length; i++) {
+			Integer temp = Integer.valueOf(elecVotes[i][1]);
+			if(max < temp) {
+				max += temp;
+				ix = i;
+			}
+		}
+		return new String(elecVotes[ix][0] + " wins " + elecVotes[0][0]);
 	}
 	
 } 
