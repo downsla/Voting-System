@@ -125,12 +125,11 @@ public class Candidate extends Database {
 	
 	public static String[] lookup(String selectedNum, int ballotIndex) { //pulls all info pertaining to single candidate
 		String[] sa = getPosLine(ballotIndex);
-		String[] sr = new String[4];
+		String[] sr = new String[3];
 		sr[0] = sa[0];
 		int sn = Integer.valueOf(selectedNum);
 		sr[1] = sa[(sn * 2) - 1];
 		sr[2] = sa[sn * 2];
-		sr[3] = String.valueOf(Integer.valueOf(sa[sa.length - ((sa.length - 1) / 3) + sn - 1]));
 		return sr;
 	}
 	
@@ -253,11 +252,11 @@ public class Candidate extends Database {
 	}
 	
 	public static String[][] getElecVotes(String[][] stats) {
-		String[][] sr = new String[stats.length][2];
+		String[][] sr = new String[stats.length][3];
 		double[] max = new double[statesList.length];
 		int[] ix = new int[statesList.length];
 		Arrays.fill(max, 0);
-		sr[0] = new String[] {stats[0][0], "Electoral Votes"};
+		sr[0] = new String[] {stats[0][0], stats[0][1], "Electoral Votes"};
 		for(int i = 1; i < stats.length; i++) {
 			for(int j = 0; j < statesList.length; j++) {
 				double temp = Double.parseDouble(stats[i][j + 14]);
@@ -267,10 +266,11 @@ public class Candidate extends Database {
 				}
 			}
 			sr[i][0] = stats[i][0];
-			sr[i][1] = "0";
+			sr[i][1] = stats[i][1];
+			sr[i][2] = "0";
 		}
 		for(int i = 1; i < statesList.length; i++) {
-			sr[ix[i]][1] = String.valueOf(Integer.valueOf(sr[ix[i]][1]) + elecList[i - 1]);
+			sr[ix[i]][2] = String.valueOf(Integer.valueOf(sr[ix[i]][2]) + elecList[i - 1]);
 		}
 		return sr;
 	}
@@ -285,20 +285,20 @@ public class Candidate extends Database {
 				ix = i;
 			}
 		}
-		return new String(candStats[ix][0] + " wins " + candStats[0][0]);
+		return new String(candStats[ix][1] + " " + candStats[ix][0] + " wins " + candStats[0][0] + ".");
 	}
 	
 	public static String getPresWin(String[][] elecVotes) {
 		Integer max = 0;
 		int ix = 0;
 		for(int i = 1; i < elecVotes.length; i++) {
-			Integer temp = Integer.valueOf(elecVotes[i][1]);
+			Integer temp = Integer.valueOf(elecVotes[i][2]);
 			if(max < temp) {
 				max += temp;
 				ix = i;
 			}
 		}
-		return new String(elecVotes[ix][0] + " wins " + elecVotes[0][0]);
+		return new String(elecVotes[ix][1] + "s " + elecVotes[ix][0] + " win " + elecVotes[0][0] + ".");
 	}
 	
 } 

@@ -8,6 +8,29 @@ public class TestDriver {
 		Candidate.loadData(state);
 	}
 	
+	public static String formatPrint(String[] sArr) {
+		int[] chLen = new int[sArr.length - 1];
+		int[] temp = new int[] {42, 22, 16, 16, 19, 7, 8, 7, 34, 7, 27, 20, 43, 7};
+		for(int i = 0; i < chLen.length && i < temp.length; i++) {
+			chLen[i] = temp[i];
+		}
+		if(14 < chLen.length) {
+			System.arraycopy(temp, 0, chLen, 0, temp.length);
+			for(int i = 14; i < chLen.length - 1; i++) {
+				chLen[i] = 6;
+			}
+			chLen[chLen.length - 1] = 11;
+		}
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < sArr.length - 1; i++) {
+			char[] ch = new char[chLen[i] - sArr[i].length()];
+			Arrays.fill(ch, ' ');
+			sb.append(sArr[i]).append(ch);
+		}
+		sb.append(sArr[sArr.length - 1]);
+		return sb.toString();
+	}
+	
 	public static void main(String[] args) {
 		
 		loadAllData("TX"); //set data files
@@ -41,17 +64,17 @@ public class TestDriver {
 		}
 		Candidate.setStatesList(new String[] {"TX", "LS"}); //only will do two states for testing
 		Candidate.setElecList(new Integer[] {38, 8});
-		Candidate.addPres(new String[] {"President/Vice", "R", "James Robert and Jimmy Kriss", "L", "Elisha Bertha and Catherine Kate"});
-		Candidate.addPos(new String[] {"Senator", "R", "Jeremy Bently", "R", "Helda Cameron"});
+		Candidate.addPres(new String[] {"President/Vice", "Republican", "James Robert and Jimmy Kriss", "Democrat", "Elisha Bertha and Catherine Kate"});
+		Candidate.addPos(new String[] {"Senator", "Republican", "Jeremy Bently", "Republican", "Helda Cameron"});
 		
 		int posCount = Candidate.getPosNum();
 		if(0 < posCount) { //checks if there are any positions to cast ballot for
 			System.out.println("\nchoices:");
 			for(int i = 1; i < (posCount + 1); i++) { //loops positions, shifted up 1
 				String[][] candidates = Candidate.getAllCand(i);
-				System.out.println("\t" + Arrays.toString(candidates[0]));
+				System.out.println("\t" + formatPrint(candidates[0]));
 				for(int j = 1; j < candidates.length; j++) {
-					System.out.println("\t" + Arrays.toString(candidates[j]));
+					System.out.println("\t" + formatPrint(candidates[j]));
 				}
 				System.out.println();
 			}
@@ -60,30 +83,30 @@ public class TestDriver {
 				String[] ballotInfo = Ballot.lookup(Ballot.getKeyVal(Voter.getVUID(locInFile))); //uses saved searchKey for testing, admin would have to look this key up using Voter.lookup()
 				System.out.println("ballot:");
 				for(int i = 1; i < ballotInfo.length; i++) { //loops through ballot
-					System.out.println("\t" + Arrays.toString(Candidate.lookup(ballotInfo[i], i)));
+					System.out.println("\t" + formatPrint(Candidate.lookup(ballotInfo[i], i)));
 				}
 				if(Candidate.isPresElec()) { //checks if it is a presidential election
 					System.out.println("\n" + "stats: "); //test prints demographics
 					
 					String[][] presidents = Candidate.getAllPresStats();
-					System.out.println("\t" + Arrays.toString(presidents[0]));
+					System.out.println("\t" + formatPrint(presidents[0]));
 					for(int j = 1; j < presidents.length; j++) {
-						System.out.println("\t" + Arrays.toString(presidents[j]));
+						System.out.println("\t" + formatPrint(presidents[j]));
 					}
 					
 					System.out.println();
 					for(int i = 2; i < (posCount + 1); i++) { 
 						String[][] candidates = Candidate.getAllCandStats(i);
-						System.out.println("\t" + Arrays.toString(candidates[0]));
+						System.out.println("\t" + formatPrint(candidates[0]));
 						for(int j = 1; j < candidates.length; j++) {
-							System.out.println("\t" + Arrays.toString(candidates[j]));
+							System.out.println("\t" + formatPrint(candidates[j]));
 						}
 						System.out.println();
 					}
 					System.out.println("winners: ");
 					String[][] electorial = Candidate.getElecVotes(presidents);
 					for(int i = 0; i < electorial.length; i++) { 
-						System.out.println("\t" + Arrays.toString(electorial[i]));
+						System.out.println("\t" + formatPrint(electorial[i]));
 					}
 					System.out.println("\n\t" + Candidate.getPresWin(electorial));
 					for(int i = 2; i < (posCount + 1); i++) { 
