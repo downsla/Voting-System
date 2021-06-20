@@ -50,73 +50,198 @@ public class TestDriver {
 	 */
 	public static void registerNewVoter()
 	{
+		int age = 18; // Used for checking potential voters age based on entered DOB, assume at first they are 18
 		Scanner scan = new Scanner(System.in);
+		String answer; // Used for user response
 		// Used for terminal output
-		String[] fields = new String[]{"First name (20 char max)", "Last name (20 char max)", "Street (20 char max)",
-				"City (20 char max)", "State (2 char max)", "Zip code (5 char max)", "DOB (mmddyyyy)",
-				"Sex (1 char max)", "Race (1 char max)"};
+		String[] fields = new String[]{"first name", "last name", "street",
+				"city", "state", "zip code (5 digits)", "DOB (mmddyyyy)",
+				"sex", "race"};
+		// Strings are used for comparing input for different attributes
+		String[] stateAbbrev = {"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN",
+				"IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM",
+				"NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV",
+				"WI", "WY"};
+		String[] sex = {"M", "F", "O"};
+		String[] race = {"N", "A", "B", "H", "P", "W"};
+
+		// Create HashSets for the different attributes
+		HashSet<String> states = new HashSet<>(Arrays.asList(stateAbbrev));
+		HashSet<String> sexes = new HashSet<>(Arrays.asList(sex));
+		HashSet<String> races = new HashSet<>(Arrays.asList(race));
 		String[] voterInfo = new String[11]; // Used to build string to add to database and voter.csv
-		System.out.println("Enter voter info");
+
+		System.out.println("****VOTER INPUT****\n");
 
 		// Loops through the 9 fields required to enter a new voter in the database
 		for(int i = 0; i < 9; i++) {
-			System.out.print(fields[i] + ": ");
+				System.out.print("Enter " + fields[i] + ": ");
 
-			// If statements are used if the input is greater than the allowed max
-			// While loop continues until user enters in correct info
-			// trim() is for leading whitespaces and toUppperCase() for capitalizing all characters
-			if (i <= 3) {
-				voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
-				while (voterInfo[i + 1].length() > 20) {
-					System.out.print("Max chars reached, please re-enter: ");
-					voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+				/*
+				If statements are used if the input is greater than the allowed max
+				While loop continues until user enters in valid info for the attribute
+				Another while loop is used to confirm valid input by prompting the user for a Y, N answer
+				trim() is for leading whitespaces and toUpperCase() for capitalizing all characters
+				 */
+
+				// First name, last name and city
+				if (i <= 1 || i == 3) {
+					while (true) {
+						answer = "";
+						voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+						while (voterInfo[i + 1].length() > 20 || !voterInfo[i + 1].matches("^[a-zA-Z_ ]*$")) {
+							System.out.println("Invalid input, please re-enter " + fields[i].toLowerCase() + ": ");
+							voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+						}
+						System.out.println("You entered: " + voterInfo[i + 1]);
+						while (!answer.equals("Y") && !answer.equals("N")) {
+							System.out.println("Is this correct (Y/N)?: ");
+							answer = scan.nextLine().trim().toUpperCase();
+						}
+						if (answer.equals("Y")) break;
+						System.out.print("Enter " + fields[i] + ": ");
+					}
 				}
-			} else if (i == 4) {
-				voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
-				while (voterInfo[i + 1].length() > 2) {
-					System.out.print("Max chars reached, please re-enter: ");
-					voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+				// Street
+				else if (i == 2) {
+					while (true) {
+						answer = "";
+						voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+						while (voterInfo[i + 1].length() > 40 || !voterInfo[i + 1].matches("^[a-zA-Z0-9_ ]*$")) {
+							System.out.println("Invalid input, please re-enter " + fields[i].toLowerCase() + ": ");
+							voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+						}
+						System.out.println("You entered: " + voterInfo[i + 1]);
+						while (!answer.equals("Y") && !answer.equals("N")) {
+							System.out.println("Is this correct (Y/N)?: ");
+							answer = scan.nextLine().trim().toUpperCase();
+						}
+						if (answer.equals("Y")) break;
+						System.out.print("Enter " + fields[i] + ": ");
+					}
 				}
-			} else if (i == 5) {
-				voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
-				while (voterInfo[i + 1].length() > 5) {
-					System.out.println("Max chars reached, please re-enter: ");
-					voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+				// State
+				else if (i == 4) {
+					while (true) {
+						answer = "";
+						voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+						while (!states.contains(voterInfo[i + 1])) {
+							System.out.println("Invalid input, please re-enter " + fields[i] + ": ");
+							voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+						}
+						System.out.println("You entered: " + voterInfo[i + 1]);
+						while (!answer.equals("Y") && !answer.equals("N")) {
+							System.out.println("Is this correct (Y/N)?: ");
+							answer = scan.nextLine().trim().toUpperCase();
+						}
+						if (answer.equals("Y")) break;
+						System.out.print("Enter " + fields[i] + ": ");
+					}
 				}
-			} else if (i == 6) {
-				voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
-				while (voterInfo[i + 1].length() > 8) {
-					System.out.println("Max chars reached, please re-enter: ");
-					voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+				// Zipcode
+				else if (i == 5) {
+					while (true) {
+						answer = "";
+						voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+						while (voterInfo[i + 1].length() != 5 || !voterInfo[i + 1].matches("^[0-9]*$")) {
+							System.out.println("Invalid input, please re-enter " + fields[i] + ": ");
+							voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+						}
+						System.out.println("You entered: " + voterInfo[i + 1]);
+						while (!answer.equals("Y") && !answer.equals("N")) {
+							System.out.println("Is this correct (Y/N)?: ");
+							answer = scan.nextLine().trim().toUpperCase();
+						}
+						if (answer.equals("Y")) break;
+						System.out.print("Enter " + fields[i] + ": ");
+					}
 				}
-			}
-			else if (i == 7 || i == 8) {
-				voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
-				while (voterInfo[i + 1].length() > 1) {
-					System.out.println("Max chars reached, please re-enter: ");
-					voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+				// DOB
+				else if (i == 6) {
+					while (true) {
+						answer = "";
+						voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+						while (voterInfo[i + 1].length() != 8 || !voterInfo[i + 1].matches("^[0-9]*$")) {
+							System.out.println("Invalid input, please re-enter " + fields[i] + ": ");
+							voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+						}
+						System.out.println("You entered: " + voterInfo[i + 1]);
+						while (!answer.equals("Y") && !answer.equals("N")) {
+							System.out.println("Is this correct (Y/N)?: ");
+							answer = scan.nextLine().trim().toUpperCase();
+						}
+						if (answer.equals("Y")) {
+							age = Voter.getAge(voterInfo[i + 1]); // Get the age from the entered birthdate
+							break;
+						}
+						System.out.print("Enter " + fields[i] + ": ");
+					}
+				}
+				// Sex
+				else if (i == 7) {
+					while (true) {
+						answer = "";
+						voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+						while (!sexes.contains(voterInfo[i + 1])) {
+							System.out.println("Invalid input, please re-enter " + fields[i] + ": ");
+							voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+						}
+						System.out.println("You entered: " + voterInfo[i + 1]);
+						while (!answer.equals("Y") && !answer.equals("N")) {
+							System.out.println("Is this correct (Y/N)?: ");
+							answer = scan.nextLine().trim().toUpperCase();
+						}
+						if (answer.equals("Y")) break;
+						System.out.print("Enter " + fields[i] + ": ");
+					}
+				}
+				// Race
+				else {
+					while (true) {
+						answer = "";
+						voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+						while (!races.contains(voterInfo[i + 1])) {
+							System.out.println("Invalid input, please re-enter " + fields[i] + ": ");
+							voterInfo[i + 1] = scan.nextLine().trim().toUpperCase();
+						}
+						System.out.println("You entered: " + voterInfo[i + 1]);
+						while (!answer.equals("Y") && !answer.equals("N")) {
+							System.out.println("Is this correct (Y/N)?: ");
+							answer = scan.nextLine().trim().toUpperCase();
+						}
+						if (answer.equals("Y")) break;
+						System.out.print("Enter " + fields[i] + ": ");
+					}
+				}
+				System.out.println();
+		} // end of for loop
+
+		// Check age based on entered DOB
+		if (age >= 18) {
+			String searchKey = Voter.getSearchKeyNAD(voterInfo); //gets string to search with
+			long locInFile; //saves location in voterFile of voterInfo
+
+			// Check for if the voter is already in the database
+			if (Voter.checkKeyNAD(searchKey))
+				System.out.println("\nVoter already database, registration not required");
+			else {
+				System.out.println("Voter not in database, registering voter");
+				Voter.register(voterInfo); //registers voter, returns complete info
+				locInFile = Voter.getKeyValNAD(searchKey); // Used for output at the end of else
+
+				// Check to ensure the new voter info was added
+				if (Voter.checkKeyNAD(searchKey)) {
+					voterInfo = Voter.lookup(locInFile); // Pulls the location from the voters.csv file
+					System.out.println("Voter now in database, registration successful\n");
+					System.out.println("voterInfo: " + Arrays.toString(voterInfo) + "\n"); //test print
 				}
 			}
 		}
-		String searchKey = Voter.getSearchKeyNAD(voterInfo); //gets string to search with
-		long locInFile; //saves location in voterFile of voterInfo
-
-		// Check for if the voter is already in the database
-		if(Voter.checkKeyNAD(searchKey))
-			System.out.println("\nVoter already database, registration not required");
-		else {
-			System.out.println("Voter not in database, registering voter");
-			Voter.register(voterInfo); //registers voter, returns complete info
-			locInFile = Voter.getKeyValNAD(searchKey); // Used for output at the end of else
-
-			// Check to ensure the new voter info was added
-			if(Voter.checkKeyNAD(searchKey)) {
-				voterInfo = Voter.lookup(locInFile); // Pulls the location from the voters.csv file
-				System.out.println("Voter now in database, registration successful\n");
-				System.out.println("voterInfo: " + Arrays.toString(voterInfo) + "\n"); //test print
-			}
+		//  If not 18, then cannot register to vote
+		else
+		{
+			System.out.println("Individual is not 18 years old, and cannot register to vote");
 		}
-
 	}
 	
 	public static void main(String[] args) {
