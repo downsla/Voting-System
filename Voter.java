@@ -157,7 +157,7 @@ public class Voter extends Database{
 		}
 		if(voterInfo[8].equals("M")) {
 			b[3] = true;
-		} else if(voterInfo[8].equals("W")) {
+		} else if(voterInfo[8].equals("F")) {
 			b[4] = true;
 		} else if(voterInfo[8].equals("O")) {
 			b[5] = true;
