@@ -1,6 +1,8 @@
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Scanner;
 
-public class TestDriver {
+public class TestDriver_Kirk {
 	
 	public static void loadAllData(String state) {
 		Voter.loadData();
@@ -245,7 +247,8 @@ public class TestDriver {
 	}
 	
 	public static void main(String[] args) {
-		
+
+		/*
 		loadAllData("TX"); //set data files
 		
 		String[] voterInfo = new String[11]; //creates array and populates with data for registered user
@@ -279,7 +282,7 @@ public class TestDriver {
 		Candidate.addPres(new String[] {"President/Vice", "R", "James Robert and Jimmy Kriss", "L", "Elisha Bertha and Catherine Kate"});
 		Candidate.addPos(new String[] {"Senator", "R", "Jeremy Bently", "R", "Helda Cameron"});
 		
-		if(0 < Candidate.numPos()) { //checks if there are any positions to cast ballot for
+		if(0 < Candidate.getPosNum()) { //checks if there are any positions to cast ballot for
 			Ballot.submit(new int[] {1, 2}, voterInfo); //votes for position 1 candidate 1 and position 2 candidate 2
 			if(Ballot.checkIfBallots()) { //checks that there are ballots
 				String[] ballotInfo = Ballot.lookup(Ballot.getKeyVal(Voter.getVUID(locInFile))); //uses saved searchKey for testing, admin would have to look this key up using Voter.lookup()
@@ -292,11 +295,13 @@ public class TestDriver {
 				}
 			}
 		}
-		
+
+
 		Candidate.clear(); //clears files for test so upon restart, candidates aren't readded
 		Candidate.loadData("LS");
 		Candidate.clear();
+		 */
+		registerNewVoter();
 		
 	}
-
 }
