@@ -301,6 +301,8 @@ public class TestDriver_Kirk {
 		Candidate.loadData("LS");
 		Candidate.clear();
 		 */
+
+		loadAllData("TX"); //set data files
 		registerNewVoter();
 		
 	}
