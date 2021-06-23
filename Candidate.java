@@ -9,8 +9,8 @@ public class Candidate extends Database {
 	private static HashMap<String, Long> map;
 	private static long secondLineVal;
 	private static String currentState;
-	private static String[] statesList;
-	private static Integer[] elecList;
+	private static String[] statesList = {"TX", "LA"};
+	private static Integer[] elecList = {38, 8};
 
 	public static int getPosNum() { //number of positions
 		return map.size();
@@ -23,14 +23,6 @@ public class Candidate extends Database {
 	public static long getKeyVal(String key) { //true if key exists
 		return map.get(key);
 	}
-
-	public static void setStatesList(String[] states) { //mutator method, used to set list of all applicable states
-		statesList = states;
-	}
-	
-	public static void setElecList(Integer[] elecVotes) { //mutator method, used to set list of all applicable states
-		elecList = elecVotes;
-	}
 	
 	public static boolean isStateValid(String voterState) {
 		if(voterState.equals(currentState)) {
@@ -42,6 +34,11 @@ public class Candidate extends Database {
 
 	public static boolean isPresElec() { //returns true if demographics are recorded for ballot (president election)
 		return (1 < secondLineVal);
+	}
+	
+	public static void loadInitData() { //only for initial startup, loads first state in list by default
+		loadData(statesList[0]);
+		Ballot.loadData(statesList[0]);
 	}
 
 	public static void loadData(String state) { //loads necessary global variable files and creates their hash maps and key sets, needs state

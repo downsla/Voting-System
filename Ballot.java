@@ -13,7 +13,7 @@ public class Ballot extends Database {
 		return keys.contains(key);
 	}
 
-	public static long getKeyVal(String key) { //true if key exists
+	public static long getKeyVal(String key) { //returns key value
 		return map.get(key);
 	}
 

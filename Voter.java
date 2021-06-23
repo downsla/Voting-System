@@ -16,6 +16,7 @@ public class Voter extends Database{
 	private static HashMap<String, Long> mapVD;
 	private static Set<String> keysNAD;
 	private static Set<String> keysVD;
+	private static int[] spacing = new int[] {20, 20, 40, 20};
 
 	public static boolean checkKeyNAD(String key) { //true if key exists
 		return keysNAD.contains(key);
@@ -81,7 +82,7 @@ public class Voter extends Database{
 	    	sa[i] = voterInfo[i];
 	    }
 	    sa[sa.length - 1] = genExpDate(); //adds expiration date
-		long l = writeFile(formatLine(sa, new int[] {20, 20, 40, 20}, 1), voterFile); //saves pointer from the new registered info
+		long l = writeFile(formatLine(sa, spacing, 1), voterFile); //saves pointer from the new registered info
 		mapNAD.put(getSearchKeyNAD(sa), l); //generates both NA and VD hash maps as well as updates the serialization
 		mapVD.put(getSearchKeyVD(sa), l);
 		saveHash(mapNAD, indexNAD);
@@ -188,7 +189,7 @@ public class Voter extends Database{
 				sa[i] = sc[i];
 			}
 		}
-		String sn = formatLine(sa, new int[] {20, 20, 20, 20}, 1); //formats all new info to write to voter file
+		String sn = formatLine(sa, spacing, 1); //formats all new info to write to voter file
 		overwriteFile(sn, l, voterFile);
 		mapNAD.put(getSearchKeyNAD(sa), l); //adds new key with preexisting value to hash map that searches using updated info (VD does not need to be updated as VUID and DOB never change)
 		mapNAD.remove(getSearchKeyNAD(sc)); //removes old key from NA search string using old saved lookup
