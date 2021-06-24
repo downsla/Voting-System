@@ -8,12 +8,13 @@ public class TestC extends TestF{ //test candidate class
 	private static File candidateFile;
 	private static File indexC;
 	private static HashMap<String, Long> mapC;
+	private static Set<String> keysC;
 	private static long firstPosition;
 	private static String currentState;
 	private static String[] states;
 	
-	public static int mapSizeC() { //number of positions
-		return mapC.size();
+	public static boolean checkKeysC(String s) { //accessor method
+		return keysC.contains(s);
 	}
 	
 	public static long getPointerC(String s) { //accessor method
@@ -37,6 +38,7 @@ public class TestC extends TestF{ //test candidate class
 		candidateFile = fs[0];
 		indexC = fs[1];
 		mapC = loadHash(indexC);
+		keysC = mapC.keySet();
 		if(candidateFile.length() == 0) { //checks if candidate file is empty
 			writeFile("\n", candidateFile); //inserts first line containing data for election
 			firstPosition = candidateFile.length();
@@ -59,6 +61,7 @@ public class TestC extends TestF{ //test candidate class
 		long l = writeFile(formatRow(sa), candidateFile); //saves pointer from new registered info
 		mapC.put(String.valueOf(n), l); //adds two digit key to hash map
 		saveHash(mapC, indexC);
+		keysC = mapC.keySet();
 	}
 	
 	public static void addPositionAll(String[] sa) { //used to generate all states to vote for position, only use as first position added
@@ -81,6 +84,7 @@ public class TestC extends TestF{ //test candidate class
 			long l = writeFile(formatRow(sa), candidateFile); //saves pointer from new registered info
 			mapC.put(String.valueOf(1), l); //adds two digit key to hash map
 			saveHash(mapC, indexC);
+			keysC = mapC.keySet();
 		}
 		setData(ogState);
 	}
