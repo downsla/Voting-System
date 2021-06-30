@@ -50,6 +50,13 @@ public class VoterHomeView extends JPanel
 		logout.setSize(100,50);
 		logoutX = .05;
 		logoutY = .05;
+		logout.addActionListener(e -> {
+			try {
+				currentDriver.switchScene(new HomeView(currentDriver));
+			} catch (InterruptedException interruptedException) {
+				interruptedException.printStackTrace();
+			}
+		});
 		
 		vote = new JButton("Cast Vote");
 		//Set to false if voter has voted

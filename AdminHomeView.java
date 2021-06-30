@@ -17,8 +17,8 @@ public class AdminHomeView extends JPanel
     private double voterInf_X, voterInf_Y, voterInf_XOffset, voterInf_YOffset;
     private JButton cand;
     private double candX, candY, candXOffset, candYOffset;
-    private JButton back;
-    private double backX, backY;
+    private JButton logout;
+    private double logoutX, logoutY;
     private JButton finalize;
     private double finalizeX, finalizeY, finalizeXOffset, finalizeYOffset;
     private JPanel content;
@@ -84,12 +84,12 @@ public class AdminHomeView extends JPanel
         	currentDriver.setSize(currentDriver.getWidth(), currentDriver.getHeight()-1);
         });
 
-        back = new JButton("Logout");
-        back.setFocusable(false);
-        back.setSize(200, 50);
-        backX = .05;
-        backY = .05;
-        back.addActionListener(e -> {
+        logout = new JButton("Logout");
+        logout.setFocusable(false);
+        logout.setSize(200, 50);
+        logoutX = .05;
+        logoutY = .05;
+        logout.addActionListener(e -> {
             try {
                 currentDriver.switchScene(new HomeView(currentDriver));
             } catch (InterruptedException interruptedException) {
@@ -130,7 +130,7 @@ public class AdminHomeView extends JPanel
         this.add(welcomeTag);
         this.add(voterInf);
         this.add(cand);
-        this.add(back);
+        this.add(logout);
         this.add(content);
         this.add(bar);
         this.add(finalize);
@@ -151,7 +151,7 @@ public class AdminHomeView extends JPanel
         int y = this.getHeight();
         voterInf.setBounds(f(x, voterInf_X, voterInf_XOffset), f(y, voterInf_Y, voterInf_YOffset), voterInf.getWidth(), voterInf.getHeight());
         cand.setBounds(f(x, candX, candXOffset), f(y, candY, candYOffset), cand.getWidth(), cand.getHeight());
-        back.setBounds(f(x, backX, 0), f(y, backY, 0), back.getWidth(), back.getHeight());
+        logout.setBounds(f(x, logoutX, 0), f(y, logoutY, 0), logout.getWidth(), logout.getHeight());
         welcomeTag.setBounds(f(x, welcomeTagX, -welcomeTag.getWidth()/2), f(y, welcomeTagY, -welcomeTag.getHeight()/2), welcomeTag.getWidth(), welcomeTag.getHeight());
         content.setBounds(f(x, contentX, contentXOffset), f(y, contentY, contentYOffset), this.getWidth(), (int)(this.getHeight()*(1-contentY)));
         //content.setBackground(contentBackground);

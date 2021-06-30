@@ -49,6 +49,7 @@ public class VoterLoginView extends JPanel
 	
 	public VoterLoginView(Launcher l)
 	{
+		voterInfo = new String[11];
 		currentDriver = l;
 		
 		this.setLayout(null);
@@ -113,17 +114,17 @@ public class VoterLoginView extends JPanel
 			{	
 				voterInfo = new String[11];
 				//voterInfo[0] = VUID
-				voterInfo[1] = firstName.getText().toUpperCase().trim();
-				voterInfo[2] = lastName.getText().toUpperCase().trim();
-				voterInfo[3] = address.getText().toUpperCase().trim();
-				voterInfo[4] = city.getText().toUpperCase().trim();
+				voterInfo[1] = firstName.getText().trim().toUpperCase();
+				voterInfo[2] = lastName.getText().trim().toUpperCase();
+				voterInfo[3] = address.getText().trim().toUpperCase();
+				voterInfo[4] = city.getText().trim().toUpperCase();
 				voterInfo[5] = (String)state.getSelectedItem();
-				voterInfo[6] = zip.getText().toUpperCase().trim();
-				voterInfo[7] = birthday.getText().toUpperCase().trim();
+				voterInfo[6] = zip.getText().trim();
+				voterInfo[7] = birthday.getText().trim();
 				//voterInfo[8] = Sex
 				//voterInfo[9] = Ethnicity
 				//voterInfo[10] = Registration Expiration Date
-				System.out.println("voterInfo: " + Arrays.toString(voterInfo));
+
 				String searchKey = Voter.getSearchKeyNAD(voterInfo);
 				long locInFile;
 
@@ -151,6 +152,14 @@ public class VoterLoginView extends JPanel
 					JPanel pan2 = new JPanel();
 					JButton pleaseRegister = new JButton("Register");
 					pleaseRegister.addActionListener(e2 -> {
+						// Remove capitalization for registration screen
+						voterInfo[1] = firstName.getText().trim();
+						voterInfo[2] = lastName.getText().trim();
+						voterInfo[3] = address.getText().trim();
+						voterInfo[4] = city.getText().trim();
+						voterInfo[5] = (String)state.getSelectedItem();
+						voterInfo[6] = zip.getText();
+						voterInfo[7] = birthday.getText();
 						currentDriver.setEnabled(true);
 						currentDriver.switchScene(new RegisterVoterInfoView(currentDriver,voterInfo));
 						popup.dispose();
@@ -191,18 +200,14 @@ public class VoterLoginView extends JPanel
 		register.addActionListener(e -> {
 			
 			voterInfo = new String[11];
-			//voterInfo[0] = VUID
-			voterInfo[1] = firstName.getIsDefault()?null: firstName.getText().trim();
-			voterInfo[2] = lastName.getIsDefault()?null: lastName.getText().trim();
-			voterInfo[3] = address.getIsDefault()?null:address.getText().trim();
-			voterInfo[4] = city.getIsDefault()?null:city.getText().trim();
+			voterInfo[1] = firstName.getIsDefault()?null: firstName.getText().trim().toUpperCase();
+			voterInfo[2] = lastName.getIsDefault()?null: lastName.getText().trim().toUpperCase();
+			voterInfo[3] = address.getIsDefault()?null:address.getText().trim().toUpperCase();
+			voterInfo[4] = city.getIsDefault()?null:city.getText().trim().toUpperCase();
 			voterInfo[5] = (String)state.getSelectedItem();
 			voterInfo[6] = zip.getIsDefault()?null:zip.getText().trim();
 			voterInfo[7] = birthday.getIsDefault()?null:birthday.getText().trim();
-			//voterInfo[8] = Sex
-			//voterInfo[9] = Ethnicity
-			//voterInfo[10] = Registration Expiration Date
-			
+			System.out.println("voterInfo: " + Arrays.toString(voterInfo));
 			currentDriver.switchScene(new RegisterVoterInfoView(currentDriver, voterInfo));
 		});
 		

@@ -1,6 +1,5 @@
 import java.awt.Color;
 import java.util.Arrays;
-import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -28,8 +27,8 @@ public class RegisterVoterInfoView extends JPanel
 	private double raceX, raceY;
 	private TextField zip;
 	private double zipX, zipY;
-	private JButton login;
-	private double loginX, loginY;
+	private JButton register;
+	private double registerX, registerY;
 	private JButton back;
 	private double backX, backY;
 
@@ -67,10 +66,9 @@ public class RegisterVoterInfoView extends JPanel
 		firstName.setSize(100, 50);
 		firstNameX = 4/20.0;
 		firstNameY = 2/10.0;
-		if(voterInfo[2] != null)
+		if(voterInfo[1] != null)
 		{
-			firstName.setText(voterInfo[2]);
-			voterInfo[2] = voterInfo[2].toUpperCase();
+			firstName.setText(voterInfo[1]);
 		}
 
 		lastName = new TextField();
@@ -79,10 +77,9 @@ public class RegisterVoterInfoView extends JPanel
 		lastName.setSize(100, 50);
 		lastNameX = 10/20.0;
 		lastNameY = 2/10.0;
-		if(voterInfo[1] != null)
+		if(voterInfo[2] != null)
 		{
-			lastName.setText(voterInfo[1]);
-			voterInfo[1] = voterInfo[1].toUpperCase();
+			lastName.setText(voterInfo[2]);
 		}
 
 		birthday = new TextField();
@@ -94,7 +91,6 @@ public class RegisterVoterInfoView extends JPanel
 		if(voterInfo[7] != null)
 		{
 			birthday.setText(voterInfo[7]);
-			voterInfo[7] = voterInfo[7].toUpperCase();
 		}
 
 		address = new TextField();
@@ -106,7 +102,6 @@ public class RegisterVoterInfoView extends JPanel
 		if(voterInfo[3] != null)
 		{
 			address.setText(voterInfo[3]);
-			voterInfo[3] = voterInfo[3].toUpperCase();
 		}
 
 		city = new TextField();
@@ -118,7 +113,6 @@ public class RegisterVoterInfoView extends JPanel
 		if(voterInfo[4] != null)
 		{
 			city.setText(voterInfo[4]);
-			voterInfo[4] = voterInfo[4].toUpperCase();
 		}
 
 		state = new JComboBox<String>(states);
@@ -131,7 +125,6 @@ public class RegisterVoterInfoView extends JPanel
 		if(voterInfo[5] != null)
 		{
 			state.setSelectedItem(voterInfo[5]);
-			voterInfo[5] = voterInfo[5].toUpperCase();
 		}
 
 		zip = new TextField();
@@ -193,24 +186,34 @@ public class RegisterVoterInfoView extends JPanel
 			}
 		});
 
-		login = new JButton();
-		login.setText("Register");
-		login.setSize(100,50);
-		loginX = 16/20.0;
-		loginY = 8/10.0;
-		login.addActionListener(e -> {
+		register = new JButton();
+		register.setText("Register");
+		register.setSize(100,50);
+		registerX = 16/20.0;
+		registerY = 8/10.0;
+		register.addActionListener(e -> {
 			if(validateInput())
 			{
-				System.out.println("voterInfo: " + Arrays.toString(voterInfo));
+				// Pull text from boxes if login is skipped by pressing register and no text was entered in
+				// at the login screen. Capitalize all input before insertion in database
+				voterInfo[1] = firstName.getIsDefault()?null: firstName.getText().trim().toUpperCase();
+				voterInfo[2] = lastName.getIsDefault()?null: lastName.getText().trim().toUpperCase();
+				voterInfo[3] = address.getIsDefault()?null:address.getText().trim().toUpperCase();
+				voterInfo[4] = city.getIsDefault()?null:city.getText().trim().toUpperCase();
+				voterInfo[5] = (String)state.getSelectedItem();
+				voterInfo[6] = zip.getIsDefault()?null:zip.getText().trim();
+				voterInfo[7] = birthday.getIsDefault()?null:birthday.getText().trim();
 
-				//Register to the system
-				Voter.register(voterInfo);
-				long locInFile = 0l;
-				currentDriver.switchScene(new VoterHomeView(currentDriver,voterInfo,locInFile));
+				// Check to ensure new voter isn't the database. Returns true if new voter is not in database
+				// Returns false if they already are
+				String searchKey = Voter.getSearchKeyNAD(voterInfo);
+				if (!Voter.checkKeyNAD(searchKey))
+					Voter.register(voterInfo);
+					long locInFile = 0l;
+					currentDriver.switchScene(new VoterHomeView(currentDriver,voterInfo,locInFile));
 			}
 			else {}
 		});
-
 
 		back = new JButton();
 		back.setText("Back");
@@ -218,7 +221,6 @@ public class RegisterVoterInfoView extends JPanel
 		backX = 4/20.0;
 		backY = 8/10.0;
 		back.addActionListener(e -> {currentDriver.switchScene(new VoterLoginView(l));});
-
 
 		this.add(firstName);
 		this.add(birthday);
@@ -228,7 +230,7 @@ public class RegisterVoterInfoView extends JPanel
 		this.add(race);
 		this.add(sex);
 		this.add(zip);
-		this.add(login);
+		this.add(register);
 		this.add(back);
 		this.add(lastName);
 
@@ -254,7 +256,7 @@ public class RegisterVoterInfoView extends JPanel
 		sex.setBounds((int)(x*sexX-sex.getWidth()/2), (int)(y*sexY-sex.getHeight()/2), sex.getWidth(), sex.getHeight());
 		race.setBounds((int)(x*raceX-race.getWidth()/2), (int)(y*raceY-race.getHeight()/2), race.getWidth(), race.getHeight());
 		zip.setBounds((int)(x*zipX-zip.getWidth()/2), (int)(y*zipY-zip.getHeight()/2), zip.getWidth(), zip.getHeight());
-		login.setBounds((int)(x*loginX-login.getWidth()/2), (int)(y*loginY-login.getHeight()/2), login.getWidth(), login.getHeight());
+		register.setBounds((int)(x* registerX - register.getWidth()/2), (int)(y* registerY - register.getHeight()/2), register.getWidth(), register.getHeight());
 		back.setBounds((int)(x*backX- back.getWidth()/2), (int)(y* backY - back.getHeight()/2), back.getWidth(), back.getHeight());
 	}
 
