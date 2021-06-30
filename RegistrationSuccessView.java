@@ -24,7 +24,7 @@ public class RegistrationSuccessView extends JPanel
         this.setLayout(null);
         this.setOpaque(true);
 
-        welcomeTag = new JLabel("Contratulations on your Registration, enjoy your participation in the democratic system.");
+        welcomeTag = new JLabel("Congratulations on your Registration, enjoy your participation in the democratic system.");
         welcomeTag.setFont(new Font("Consolas", Font.PLAIN, 16));
         welcomeTag.setSize(2000, 20);
         welcomeTag.setVerticalAlignment(JLabel.BOTTOM);

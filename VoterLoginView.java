@@ -1,6 +1,6 @@
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -12,9 +12,9 @@ public class VoterLoginView extends JPanel
 {
 	private Launcher currentDriver;
 	
-	private TextField username;
+	private TextField firstName;
 	private double usernameX, usernameY;
-	private TextField password;
+	private TextField lastName;
 	private double passwordX, passwordY;
 	private TextField birthday;
 	private double birthdayX, birthdayY;
@@ -53,17 +53,17 @@ public class VoterLoginView extends JPanel
 		
 		this.setLayout(null);
 		
-		username = new TextField();
-		username.setPlaceholder("First Name");
-		username.setBackground(defaultBackground);
-		username.setSize(100, 50);
+		firstName = new TextField();
+		firstName.setPlaceholder("First Name");
+		firstName.setBackground(defaultBackground);
+		firstName.setSize(100, 50);
 		usernameX = 5/18.0;
 		usernameY = 1/5.0;
 		
-		password = new TextField();
-		password.setPlaceholder("Last Name");
-		password.setBackground(defaultBackground);
-		password.setSize(100, 50);
+		lastName = new TextField();
+		lastName.setPlaceholder("Last Name");
+		lastName.setBackground(defaultBackground);
+		lastName.setSize(100, 50);
 		passwordX = 9/18.0;
 		passwordY = 1/5.0;
 		
@@ -113,20 +113,20 @@ public class VoterLoginView extends JPanel
 			{	
 				voterInfo = new String[11];
 				//voterInfo[0] = VUID
-				voterInfo[1] = password.getText().trim();
-				voterInfo[2] = username.getText().trim();
-				voterInfo[3] = address.getText().trim();
-				voterInfo[4] = city.getText().trim();
+				voterInfo[1] = firstName.getText().toUpperCase().trim();
+				voterInfo[2] = lastName.getText().toUpperCase().trim();
+				voterInfo[3] = address.getText().toUpperCase().trim();
+				voterInfo[4] = city.getText().toUpperCase().trim();
 				voterInfo[5] = (String)state.getSelectedItem();
-				voterInfo[6] = zip.getText().trim();
-				voterInfo[7] = birthday.getText().trim();
+				voterInfo[6] = zip.getText().toUpperCase().trim();
+				voterInfo[7] = birthday.getText().toUpperCase().trim();
 				//voterInfo[8] = Sex
 				//voterInfo[9] = Ethnicity
 				//voterInfo[10] = Registration Expiration Date
-				
+				System.out.println("voterInfo: " + Arrays.toString(voterInfo));
 				String searchKey = Voter.getSearchKeyNAD(voterInfo);
 				long locInFile;
-				
+
 				if(!Voter.checkKeyNAD(searchKey))
 				{
 					//Go to Voter Registration page
@@ -192,8 +192,8 @@ public class VoterLoginView extends JPanel
 			
 			voterInfo = new String[11];
 			//voterInfo[0] = VUID
-			voterInfo[1] = password.getIsDefault()?null:password.getText().trim();
-			voterInfo[2] = username.getIsDefault()?null:username.getText().trim();
+			voterInfo[1] = firstName.getIsDefault()?null: firstName.getText().trim();
+			voterInfo[2] = lastName.getIsDefault()?null: lastName.getText().trim();
 			voterInfo[3] = address.getIsDefault()?null:address.getText().trim();
 			voterInfo[4] = city.getIsDefault()?null:city.getText().trim();
 			voterInfo[5] = (String)state.getSelectedItem();
@@ -206,8 +206,8 @@ public class VoterLoginView extends JPanel
 			currentDriver.switchScene(new RegisterVoterInfoView(currentDriver, voterInfo));
 		});
 		
-		this.add(username);
-		this.add(password);
+		this.add(firstName);
+		this.add(lastName);
 		this.add(birthday);
 		this.add(address);
 		this.add(city);
@@ -229,8 +229,8 @@ public class VoterLoginView extends JPanel
 		
 		int x = this.getWidth();
 		int y = this.getHeight();
-		username.setBounds((int)(x*usernameX-username.getWidth()/2), (int)(y*usernameY-username.getHeight()/2), username.getWidth(), username.getHeight());
-		password.setBounds((int)(x*passwordX-password.getWidth()/2), (int)(y*passwordY-password.getHeight()/2), password.getWidth(), password.getHeight());
+		firstName.setBounds((int)(x*usernameX- firstName.getWidth()/2), (int)(y*usernameY- firstName.getHeight()/2), firstName.getWidth(), firstName.getHeight());
+		lastName.setBounds((int)(x*passwordX- lastName.getWidth()/2), (int)(y*passwordY- lastName.getHeight()/2), lastName.getWidth(), lastName.getHeight());
 		birthday.setBounds((int)(x*birthdayX-birthday.getWidth()/2), (int)(y*birthdayY-birthday.getHeight()/2), birthday.getWidth(), birthday.getHeight());
 		address.setBounds((int)(x*addressX-address.getWidth()/2), (int)(y*addressY-address.getHeight()/2), address.getWidth(), address.getHeight());
 		city.setBounds((int)(x*cityX-city.getWidth()/2), (int)(y*cityY-city.getHeight()/2), city.getWidth(), city.getHeight());
@@ -245,24 +245,24 @@ public class VoterLoginView extends JPanel
 	{
 		boolean isValid = true;
 		
-		if(username.getIsDefault())
+		if(firstName.getIsDefault())
 		{
-			username.setBackground(invalid);
+			firstName.setBackground(invalid);
 			isValid = false;
 		}
 		else
 		{
-			username.setBackground(defaultBackground);
+			firstName.setBackground(defaultBackground);
 		}
 		
-		if(password.getIsDefault())
+		if(lastName.getIsDefault())
 		{
-			password.setBackground(invalid);
+			lastName.setBackground(invalid);
 			isValid = false;
 		}
 		else
 		{
-			password.setBackground(defaultBackground);
+			lastName.setBackground(defaultBackground);
 		}
 		
 		if(!birthday.getText().matches("\\d{8}"))

@@ -38,7 +38,7 @@ public class VoterHomeView extends JPanel
 		voterInfo = vi;
 		locInFile = lif;
 		
-		welcomeTag = new JLabel("Welcome " + voterInfo[2]);
+		welcomeTag = new JLabel("Welcome " + voterInfo[1] + " " + voterInfo[2]);
         welcomeTag.setFont(new Font("Consolas", Font.PLAIN, 16));
         welcomeTag.setSize(2000, 20);
         welcomeTag.setVerticalAlignment(JLabel.BOTTOM);

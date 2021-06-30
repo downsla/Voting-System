@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.util.Arrays;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -43,10 +44,10 @@ public class RegisterVoterInfoView extends JPanel
 			 "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"};
 
 	private String[] sexes =
-			{"Male", "Female"};
+			{"Male", "Female",};
 
 	private String[] races =
-			{"Caucasian", "African American", "Asian", "American Indian", "Hispanic", "Pacific Islander"};
+			{"White", "African American", "Asian", "American Indian", "Hispanic", "Pacific Islander"};
 	
 	private String[] voterInfo;
 
@@ -69,6 +70,7 @@ public class RegisterVoterInfoView extends JPanel
 		if(voterInfo[2] != null)
 		{
 			firstName.setText(voterInfo[2]);
+			voterInfo[2] = voterInfo[2].toUpperCase();
 		}
 
 		lastName = new TextField();
@@ -80,6 +82,7 @@ public class RegisterVoterInfoView extends JPanel
 		if(voterInfo[1] != null)
 		{
 			lastName.setText(voterInfo[1]);
+			voterInfo[1] = voterInfo[1].toUpperCase();
 		}
 
 		birthday = new TextField();
@@ -91,6 +94,7 @@ public class RegisterVoterInfoView extends JPanel
 		if(voterInfo[7] != null)
 		{
 			birthday.setText(voterInfo[7]);
+			voterInfo[7] = voterInfo[7].toUpperCase();
 		}
 
 		address = new TextField();
@@ -102,6 +106,7 @@ public class RegisterVoterInfoView extends JPanel
 		if(voterInfo[3] != null)
 		{
 			address.setText(voterInfo[3]);
+			voterInfo[3] = voterInfo[3].toUpperCase();
 		}
 
 		city = new TextField();
@@ -113,6 +118,7 @@ public class RegisterVoterInfoView extends JPanel
 		if(voterInfo[4] != null)
 		{
 			city.setText(voterInfo[4]);
+			voterInfo[4] = voterInfo[4].toUpperCase();
 		}
 
 		state = new JComboBox<String>(states);
@@ -125,6 +131,7 @@ public class RegisterVoterInfoView extends JPanel
 		if(voterInfo[5] != null)
 		{
 			state.setSelectedItem(voterInfo[5]);
+			voterInfo[5] = voterInfo[5].toUpperCase();
 		}
 
 		zip = new TextField();
@@ -146,6 +153,28 @@ public class RegisterVoterInfoView extends JPanel
 		raceX = 14/20.0;
 		raceY = 5/10.0;
 
+		race.addActionListener(e -> {
+			String getRace = (String) race.getSelectedItem();
+			if ("White".equals(getRace)) {
+				voterInfo[9] = "W";
+			}
+			else if("African American".equals(getRace)) {
+				voterInfo[9] = "A";
+			}
+			else if("Asian".equals(getRace)) {
+				voterInfo[9] = "S";
+			}
+			else if("American Indian".equals(getRace)) {
+				voterInfo[9] = "A";
+			}
+			else if("Hispanic".equals(getRace)) {
+				voterInfo[9] = "H";
+			}
+			else if("Pacific Islander".equals(getRace)) {
+				voterInfo[9] = "P";
+			}
+		});
+
 		sex = new JComboBox<String>(sexes);
 		sex.insertItemAt("Sex",0); //Check they don't leave "Sex" selected
 		sex.setSelectedIndex(0);
@@ -153,6 +182,16 @@ public class RegisterVoterInfoView extends JPanel
 		sex.setSize(50,20);
 		sexX = 17/20.0;
 		sexY = 5/10.0;
+
+		sex.addActionListener(e -> {
+			String getSex = (String) sex.getSelectedItem();
+			if ("Male".equals(getSex)) {
+				voterInfo[8] = "M";
+			}
+			else if("Female".equals(getSex)) {
+				voterInfo[8] = "F";
+			}
+		});
 
 		login = new JButton();
 		login.setText("Register");
@@ -162,8 +201,10 @@ public class RegisterVoterInfoView extends JPanel
 		login.addActionListener(e -> {
 			if(validateInput())
 			{
+				System.out.println("voterInfo: " + Arrays.toString(voterInfo));
+
 				//Register to the system
-				//get locInFile
+				Voter.register(voterInfo);
 				long locInFile = 0l;
 				currentDriver.switchScene(new VoterHomeView(currentDriver,voterInfo,locInFile));
 			}
