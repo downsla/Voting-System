@@ -220,12 +220,14 @@ public class TestDriver_Kirk {
 
 		// Check age based on entered DOB
 		if (age >= 18) {
+			System.out.println("voterInfo: " + Arrays.toString(voterInfo));
 			String searchKey = Voter.getSearchKeyNAD(voterInfo); //gets string to search with
+			System.out.println("searchKey: " + searchKey);
 			long locInFile; //saves location in voterFile of voterInfo
 
 			// Check for if the voter is already in the database
 			if (Voter.checkKeyNAD(searchKey))
-				System.out.println("\nVoter already database, registration not required");
+				System.out.println("\nVoter already in database, registration not required");
 			else {
 				System.out.println("Voter not in database, registering voter");
 				Voter.register(voterInfo); //registers voter, returns complete info
@@ -303,7 +305,8 @@ public class TestDriver_Kirk {
 		 */
 
 		loadAllData("TX"); //set data files
-		registerNewVoter();
-		
+		registerNewTestVoterData();
+		//registerNewVoter();
+
 	}
 }
