@@ -20,7 +20,7 @@ public class Candidate extends Database {
 		return ((posLineLen - 1) / 3);
 	}
 
-	public static long getKeyVal(String key) { //true if key exists
+	public static long getKeyVal(String key) { //returns position in file
 		return map.get(key);
 	}
 	
@@ -134,7 +134,7 @@ public class Candidate extends Database {
 		String [] posLine = getPosLine(posLineNum);
 		int n = getCandNum(posLine.length);
 		String[][] sr = new String[n + 1][2];
-		sr[0] = new String[]{posLine[0], "Party"};
+		sr[0] = new String[] {posLine[0], "PARTY"};
 		for(int i = 1; i < n + 1; i++) {
 			sr[i][0] = posLine[i * 2];
 			sr[i][1] = posLine[(i * 2) - 1];
@@ -143,8 +143,12 @@ public class Candidate extends Database {
 	}
 	
 	public static String[] getPosLine(int posLineNum) {
-		String[] sa = readFile(map.get(String.valueOf(posLineNum)), candidateFile);
-		return sa;
+		Long l = map.get(String.valueOf(posLineNum));
+		if(l != null) {
+			return readFile(l, candidateFile);
+		} else {
+			return new String[] {""}; //returns empty string array if position doesn't exist
+		}
 	}
 	
 	public static Integer[][] getDemoLine() { //returns all demographics from all state files
@@ -160,20 +164,23 @@ public class Candidate extends Database {
 	
 	public static String[][] getAllCandStats(int posLineNum) { //returns all candidates info for position, needs position line and number of candidates
 		String [] posLine = getPosLine(posLineNum);
-		int cn = getCandNum(posLine.length);
-		Integer t = 0; //total votes for position
-		for(int i = 0; i < cn; i++) {
-			t += Integer.valueOf(posLine[posLine.length - cn + i]);
+		if(1 < posLine.length) {
+			int cn = getCandNum(posLine.length);
+			Integer t = 0; //total votes for position
+			for(int i = 0; i < cn; i++) {
+				t += Integer.valueOf(posLine[posLine.length - cn + i]);
+			}
+			String[][] sr = new String[cn + 1][4];
+			sr[0] = new String[]{posLine[0], "PARTY", "VOTES", "PERCENT"};
+			for(int i = 1; i < cn + 1; i++) {
+				sr[i][0] = posLine[i * 2];
+				sr[i][1] = posLine[(i * 2) - 1];
+				sr[i][2] = String.valueOf(Integer.valueOf(posLine[posLine.length - cn + i - 1]));
+				sr[i][3] = getPercent(Integer.valueOf(sr[i][2]), t);
+			}
+			return sr;
 		}
-		String[][] sr = new String[cn + 1][4];
-		sr[0] = new String[]{posLine[0], "Party", "Votes", "Percent"};
-		for(int i = 1; i < cn + 1; i++) {
-			sr[i][0] = posLine[i * 2];
-			sr[i][1] = posLine[(i * 2) - 1];
-			sr[i][2] = String.valueOf(Integer.valueOf(posLine[posLine.length - cn + i - 1]));
-			sr[i][3] = getPercent(Integer.valueOf(sr[i][2]), t);
-		}
-		return sr;
+		return new String[][] {{""}};
 	}
 	
 	public static String[][] getAllPresStats() {
@@ -212,12 +219,12 @@ public class Candidate extends Database {
 		String[][] sDemo = convertToPercent(demo, t);
 		String[][] sVC = convertToPercent(vc, t);
 		String[] temp = new String[]{cand[0][0], cand[0][1], 
-				"18 to 35 years", "36 to 65 years", "65 years and over", 
-				"Male", "Female", "Other", 
-				"American Indian or Alaska Native", "Asian", "Black or African American", "Hispanic or Latinx", "Native Hawaiian or Other Pacific Islander", "White"};
+				"18 TO 35 YEARS", "36 TO 65 YEARS", "65 YEARS AND OVER", 
+				"MALE", "FEMALE", "OTHER", 
+				"AMERICAN INDIAN OR ALASKA NATIVE", "ASIAN", "BLACK OR AFRICAN AMERICAN", "HISPANIC OR LATINX", "NATIVE HAWAIIAN OR OTHER PACIFIC ISLANDER", "WHITE"};
 		System.arraycopy(temp, 0, stats[0], 0, temp.length);
 		System.arraycopy(statesList, 0, stats[0], 14, statesList.length);
-		String[] temp2 = new String[] {"Votes", "Percent"};
+		String[] temp2 = new String[] {"VOTES", "PERCENT"};
 		System.arraycopy(temp2, 0, stats[0], (14 + statesList.length), temp2.length);
 		for(int i = 1; i < stats.length; i++) {
 			int ix = 0;
@@ -253,7 +260,7 @@ public class Candidate extends Database {
 		double[] max = new double[statesList.length];
 		int[] ix = new int[statesList.length];
 		Arrays.fill(max, 0);
-		sr[0] = new String[] {stats[0][0], stats[0][1], "Electoral Votes"};
+		sr[0] = new String[] {stats[0][0], stats[0][1], "ELECTORAL VOTES"};
 		for(int i = 1; i < stats.length; i++) {
 			for(int j = 0; j < statesList.length; j++) {
 				double temp = Double.parseDouble(stats[i][j + 14]);
@@ -273,16 +280,19 @@ public class Candidate extends Database {
 	}
 	
 	public static String getCandWin(String[][] candStats) {
-		Integer max = 0;
-		int ix = 0;
-		for(int i = 1; i < candStats.length; i++) {
-			Integer temp = Integer.valueOf(candStats[i][2]);
-			if(max < temp) {
-				max += temp;
-				ix = i;
+		if(1 < candStats[0].length) {
+			Integer max = 0;
+			int ix = 0;
+			for(int i = 1; i < candStats.length; i++) {
+				Integer temp = Integer.valueOf(candStats[i][2]);
+				if(max < temp) {
+					max += temp;
+					ix = i;
+				}
 			}
+			return new String(candStats[ix][1] + " " + candStats[ix][0] + " WINS " + candStats[0][0] + ".");
 		}
-		return new String(candStats[ix][1] + " " + candStats[ix][0] + " wins " + candStats[0][0] + ".");
+		return new String("");
 	}
 	
 	public static String getPresWin(String[][] elecVotes) {
@@ -295,7 +305,7 @@ public class Candidate extends Database {
 				ix = i;
 			}
 		}
-		return new String(elecVotes[ix][1] + "s " + elecVotes[ix][0] + " win " + elecVotes[0][0] + ".");
+		return new String(elecVotes[ix][1] + "S " + elecVotes[ix][0] + " WIN " + elecVotes[0][0] + ".");
 	}
 	
 } 

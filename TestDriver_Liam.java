@@ -50,15 +50,15 @@ public class TestDriver {
 		System.out.println("voterInfo: " + Arrays.toString(voterInfo)); //test print
 		
 		if(!Candidate.isStateValid(voterInfo[5])) { //checks if voter is registered in this state
-			System.out.println("State not valid"); //test print
+			System.out.println("STATE IS NOT VALID"); //test print
 		}
 		
 		if(Voter.isExpired(voterInfo[10])) { //checks expiration date of second test, because the test isn't expired, it shouldn't do anything, but it has been tested previously
 			voterInfo = Voter.editLine(new String[] {Voter.genExpDate()}, 10, Voter.getKeyValNAD(searchKey));
 			System.out.println("voterInfo: " + Arrays.toString(voterInfo)); //test print
 		}
-		Candidate.addPres(new String[] {"President/Vice", "Republican", "James Robert and Jimmy Kriss", "Democrat", "Elisha Bertha and Catherine Kate"});
-		Candidate.addPos(new String[] {"Senator", "Republican", "Jeremy Bently", "Republican", "Helda Cameron"});
+		Candidate.addPres(new String[] {"PRESIDENT AND VICE", "REPUBLICAN", "JAMES ROBERT AND JIMMY KRISS", "DEMOCRAT", "ELISHA BERTHA AND CATHERINE KATE"});
+		Candidate.addPos(new String[] {"SENATOR", "REPUBLICAN", "JEREMY BENTLY", "REPUBLICAN", "HELDA CAMERON"});
 		
 		int posCount = Candidate.getPosNum();
 		if(0 < posCount) { //checks if there are any positions to cast ballot for

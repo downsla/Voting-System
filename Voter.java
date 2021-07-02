@@ -179,12 +179,12 @@ public class Voter extends Database{
 		return b;
 	}
 	
-	public static String[] editLine(String[] voterInfo, int startIndex, long l) { //edits an exist voter info using array of new info, the index to start overwriting, and the pointer to the voter file
+	public static String[] editLine(String[] newInfo, int startIndex, long l) { //edits an exist voter info using array of new info, the index to start overwriting, and the pointer to the voter file
 		String[] sa = new String[11];
 		String[] sc = lookup(l); //gets current all voter info
 		for(int i = 0; i < sa.length; i++) { //inserts new info
-			if(startIndex <= i && i < (startIndex + voterInfo.length)) {
-				sa[i] = voterInfo[i - startIndex];
+			if(startIndex <= i && i < (startIndex + newInfo.length)) {
+				sa[i] = newInfo[i - startIndex];
 			} else {
 				sa[i] = sc[i];
 			}
