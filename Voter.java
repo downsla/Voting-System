@@ -1,7 +1,11 @@
 import java.io.File;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.Set;
 
 public class Voter extends Database{
 	
@@ -29,7 +33,7 @@ public class Voter extends Database{
 	public static long getKeyValVD(String key) { //gets pointer in file from key
 		return mapVD.get(key);
 	}
-
+	
 	public static String[] lookup(long l) { //takes pointer and returns all voter info
 		String[] sa = readFile(l, voterFile); //puts line from file into string array, prepares to format
 		String[] sr = new String[11];
@@ -215,4 +219,5 @@ public class Voter extends Database{
 		String[] temp = new String[] {voterInfo[0], voterInfo[7]};
 		return String.join("", temp);
 	}
+
 }

@@ -19,6 +19,10 @@ public class Candidate extends Database {
 	public static int getCandNum(int posLineLen) {
 		return ((posLineLen - 1) / 3);
 	}
+	
+	public static String[] getStatesList() {
+		return statesList;
+	}
 
 	public static long getKeyVal(String key) { //returns position in file
 		return map.get(key);
@@ -133,13 +137,16 @@ public class Candidate extends Database {
 	public static String[][] getAllCand(int posLineNum) { //returns all candidates info for position, needs position line and number of candidates
 		String [] posLine = getPosLine(posLineNum);
 		int n = getCandNum(posLine.length);
-		String[][] sr = new String[n + 1][2];
-		sr[0] = new String[] {posLine[0], "PARTY"};
-		for(int i = 1; i < n + 1; i++) {
-			sr[i][0] = posLine[i * 2];
-			sr[i][1] = posLine[(i * 2) - 1];
+		if(0 < n) {
+			String[][] sr = new String[n + 1][2];
+			sr[0] = new String[] {posLine[0], "PARTY"};
+			for(int i = 1; i < n + 1; i++) {
+				sr[i][0] = posLine[i * 2];
+				sr[i][1] = posLine[(i * 2) - 1];
+			}
+			return sr;
 		}
-		return sr;
+		return new String[][] {{""}};
 	}
 	
 	public static String[] getPosLine(int posLineNum) {
