@@ -129,8 +129,13 @@ public class Candidate extends Database {
 		String[] sr = new String[3];
 		sr[0] = sa[0];
 		int sn = Integer.valueOf(selectedNum);
-		sr[1] = sa[(sn * 2) - 1];
-		sr[2] = sa[sn * 2];
+		
+		if(sn != 0) {
+			sr[1] = sa[(sn * 2) - 1];
+			sr[2] = sa[sn * 2];
+		} else {
+			sr[1] = sr[2] = "NONE";
+		}
 		return sr;
 	}
 	
@@ -249,7 +254,11 @@ public class Candidate extends Database {
 	}
 	
 	public static String getPercent(Integer i, Integer t) {
-		return (String.format("%.1f", ((double) i / t) * 100));
+		if(i == 0) {
+			return "0.0";
+		} else {
+			return (String.format("%.1f", ((double) i / t) * 100));
+		}
 	}
 	
 	public static String[][] convertToPercent(Integer[][] iaa, int t) {
@@ -281,7 +290,9 @@ public class Candidate extends Database {
 			sr[i][2] = "0";
 		}
 		for(int i = 1; i < statesList.length; i++) {
-			sr[ix[i]][2] = String.valueOf(Integer.valueOf(sr[ix[i]][2]) + elecList[i - 1]);
+			if(ix[i] != 0) {
+				sr[ix[i]][2] = String.valueOf(Integer.valueOf(sr[ix[i]][2]) + elecList[i - 1]);
+			}
 		}
 		return sr;
 	}
@@ -312,7 +323,12 @@ public class Candidate extends Database {
 				ix = i;
 			}
 		}
-		return new String(elecVotes[ix][1] + "S " + elecVotes[ix][0] + " WIN " + elecVotes[0][0] + ".");
+		if(ix != 0) {
+			return new String(elecVotes[ix][1] + "S " + elecVotes[ix][0] + " WIN " + elecVotes[0][0] + ".");
+		} else {
+			return "";
+		}
+		
 	}
 	
 } 

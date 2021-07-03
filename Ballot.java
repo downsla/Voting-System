@@ -37,14 +37,16 @@ public class Ballot extends Database {
 	}
 
 	public static void submit(int[] ballotInfo, String[] voterInfo) { //need to save ballot info to tally in another file later, takes voter info
-		if (Candidate.isPresElec()) { //if there is a demographics line, update it
+		if (Candidate.isPresElec() && (ballotInfo[0] != 0)) { //if there is a demographics line, update it
 			Candidate.incrDemo(Voter.getDemo(voterInfo), ballotInfo[0]); //updates demographics using presidential candidate and the voter's demographic
 		}
 		String[] b = new String[ballotInfo.length + 1];
 		b[0] = voterInfo[0]; //sets VUID
 		for(int i = 1; i < b.length; i++) { //formats single digits to two
 			b[i] = String.format("%02d", ballotInfo[i - 1]);
-			Candidate.incrCandVote(b[i], i); //increments candidate's vote counter
+			if(ballotInfo[i - 1] != 0) {
+				Candidate.incrCandVote(b[i], i); //increments candidate's vote counter
+			}
 		}
 		long l = writeFile(formatLine(b), ballotFile); //saves pointer from new registered info
 		map.put(b[0], l); //generates hash maps as well as updates the serialization
