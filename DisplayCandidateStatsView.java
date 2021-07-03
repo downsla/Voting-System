@@ -9,16 +9,8 @@ public class DisplayCandidateStatsView extends JPanel
 
 	private JLabel label1;
 	private double label1X, label1Y;
-	private JLabel label2;
-	private double label2X, label2Y;
-	private JLabel label3;
-	private double label3X, label3Y;
 	private JButton next;
 	private double nextX, nextY;
-	private JButton back;
-	private double backX, backY;
-	private JTextArea stats;
-	private double statsX, statsY;
 	private JComboBox<String> state;
 	private double stateX, stateY;
 
@@ -34,23 +26,19 @@ public class DisplayCandidateStatsView extends JPanel
 					"NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
 					"SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"};
 
-	int frameCount=0;//this lets you count to subdivide the results to create frames
-	boolean incrementFrameCount=false;
-
 	private Color defaultBackground = new Color(250, 250, 250);
 
 	private boolean loaded;
 
 	public DisplayCandidateStatsView (Launcher l)
 	{
-		String st="";
 		currentDriver = l;
 
 		this.setLayout(null);
 
 		label1 = new JLabel("Please select the state for which you would like to view the stats:");
 		label1.setFont(new Font("Consolas", Font.PLAIN, 16));
-		label1.setSize(2000, 20);
+		label1.setSize(400, 20);
 		label1.setVerticalAlignment(JLabel.BOTTOM);
 		label1.setHorizontalAlignment(JLabel.CENTER);
 		label1X = 2 / 7.0;
@@ -67,9 +55,8 @@ public class DisplayCandidateStatsView extends JPanel
 		next = new JButton();
 		next.setText("Display");
 		next.setSize(100,50);
-		nextX = 5/7.0;
+		nextX = 4/7.0;
 		nextY = 8/10.0;
-		int fC=frameCount;
 		next.addActionListener(e -> {
 			if(!(state.getSelectedItem().equals(" ")))
 			{
@@ -81,25 +68,9 @@ public class DisplayCandidateStatsView extends JPanel
 			}
 		});
 
-
-		back = new JButton();
-		back.setText("Back");
-		back.setSize(100,50);
-		backX = 2/7.0;
-		backY = 8/10.0;
-		back.addActionListener(e -> {
-			try {
-				currentDriver.switchScene(new AdminHomeView(l));
-			} catch (InterruptedException interruptedException) {
-				interruptedException.printStackTrace();
-			}
-		});
-
-
 		this.add(label1);
 		this.add(state);
 		this.add(next);
-		this.add(back);
 
 		loaded = true;
 	}
@@ -118,7 +89,6 @@ public class DisplayCandidateStatsView extends JPanel
 		label1.setBounds((int)(x*label1X - label1.getWidth()/2), (int)(y* label1Y - label1.getHeight()/2), label1.getWidth(), label1.getHeight());
 		state.setBounds((int)(x* stateX - state.getWidth()/2), (int)(y* stateY - state.getHeight()/2), state.getWidth(), state.getHeight());
 		next.setBounds((int)(x* nextX - next.getWidth()/2), (int)(y* nextY - next.getHeight()/2), next.getWidth(), next.getHeight());
-		back.setBounds((int)(x*backX- back.getWidth()/2), (int)(y* backY - back.getHeight()/2), back.getWidth(), back.getHeight());
 	}
 
 	private void displayStats(String state)
@@ -132,15 +102,6 @@ public class DisplayCandidateStatsView extends JPanel
 		frame.add(scroll); //We add the scroll, since the scroll already contains the textArea
 		frame.pack();
 		frame.setVisible(true);
-
-        /*PrintStream out = new PrintStream(new OutputStream() {
-            @Override
-            public void write(int b) throws IOException {
-                output.append(""+(char)(b & 0xFF));
-            }
-        });
-        System.setOut(out);
-        System.out.println("TEST");*/
 	}
 
 	private String formatDisplay(String state)
