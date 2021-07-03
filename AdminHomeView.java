@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.swing.JButton;
@@ -30,12 +31,16 @@ public class AdminHomeView extends JPanel
 
 	//private Color contentBackground = new Color(245, 245, 245);
 
+    private static boolean isAnElection;
     private boolean loaded;
-
-    public AdminHomeView(Launcher l) throws InterruptedException
+    
+    public AdminHomeView(Launcher l, boolean b) throws InterruptedException
     {
         currentDriver = l;
 
+        //isAnElection = Candidate.getIsAnElection();
+        isAnElection = b;
+        
         this.setLayout(null);
         //this.setOpaque(true);
 
@@ -67,6 +72,10 @@ public class AdminHomeView extends JPanel
         });
 
         cand = new JButton("Add Candidate");
+        if(isAnElection)
+        {
+        	cand.setText("New Election");
+        }
         cand.setFocusable(false);
         cand.setSize(200, 50);
         candX = 8/20.0;
@@ -74,15 +83,25 @@ public class AdminHomeView extends JPanel
         candXOffset = (3);
         candYOffset = 0;
         cand.addActionListener(e -> {
+        	if(isAnElection)
+        	{
+        		Candidate.clearAllCandidates();
+        		candidates.clear();
+        		cand.setText("Add Candidate");
+        		finalize.setEnabled(true);
+        	}
         	this.remove(content);
         	//this.repaint();
         	content = new AddCandidateView(currentDriver, this);
         	this.add(content);
+        	System.out.println(candidates+"**********************");
         	//this.setVisible(true);
         	//this.repaint();
         	currentDriver.setSize(currentDriver.getWidth(), currentDriver.getHeight()+1);
         	currentDriver.setSize(currentDriver.getWidth(), currentDriver.getHeight()-1);
         });
+        //System.out.println(Candidate.getPosNum()+"-------------------------------------------------------------------------");
+        //System.out.println(Candidate.getIsAnElection());
 
         logout = new JButton("Logout");
         logout.setFocusable(false);
@@ -120,12 +139,33 @@ public class AdminHomeView extends JPanel
         finalizeXOffset = 6+candXOffset+cand.getWidth();
         finalizeYOffset = 0;
         finalize.addActionListener(e -> {
+        	this.clearContent();
+        	isAnElection = true;
         	System.out.println(candidates);
         	cand.setText("New Election");
         	//Add candidates to data file
         	//candidates.get("President/Vice") will be the presidential candidates
         	//Loop through the keyset for the rest
+        	//Candidate.addPres(putInFormat(candidates.get("President/Vice")));
+        	if(candidates.containsKey("President/Vice"))
+        	{
+        		addPres(candidates.get("President/Vice"));
+        	}
+        	for(String s : candidates.keySet())
+        	{
+        		if(!s.equals("President/Vice"))
+        		{
+        			//Candidate.addPos(putInFormat(candidates.get(s)));
+        			addPos(candidates.get(s), s);
+        		}
+        	}
+        	Candidate.setIsAnElection(true);
+        	finalize.setEnabled(false);
         });
+        if(isAnElection)
+        {
+        	finalize.setEnabled(false);
+        }
 
         this.add(welcomeTag);
         this.add(voterInf);
@@ -180,5 +220,47 @@ public class AdminHomeView extends JPanel
     {
     	this.remove(content);
     	currentDriver.repaint();
+    }
+    
+    private void addPos(ArrayList<String[]> a, String pos)
+    {
+    	HashMap<String, ArrayList<String[]>> subset = new HashMap<String, ArrayList<String[]>>();
+    	for(String[] x : a)
+    	{
+    		if(!subset.containsKey(x[3]))
+    		{
+    			subset.put(x[3], new ArrayList<String[]>());
+    		}
+    		subset.get(x[3]).add(x);
+    	}
+    	for(String state : subset.keySet())
+    	{
+    		ArrayList<String[]> c = subset.get(state);
+    		String[] s = new String[c.size()*2+1];
+    		s[0] = pos;
+        	for(int i = 0; i < c.size(); i++)
+        	{
+        		//System.out.println(Arrays.toString(a.get(i)));
+        		s[(i)*2+1] = c.get(i)[1];
+        		s[(i+1)*2] = c.get(i)[2];
+        	}
+        	//System.out.println(Arrays.toString(s));
+        	Candidate.addPos(s, state);
+    	}
+    }
+    
+    private void addPres(ArrayList<String[]> a)
+    {
+    	String[] c = new String[a.size()*2+1];
+    	c[0] = "President/Vice";
+    	int index = 1;
+    	for(String[] s : a)
+    	{
+    		c[index] = s[1];
+    		c[index+1] = s[2];
+    		index += 2;
+    		System.out.println(Arrays.toString(s));
+    	}
+    	Candidate.addPres(c);
     }
 }

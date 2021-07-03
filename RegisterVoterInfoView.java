@@ -203,13 +203,16 @@ public class RegisterVoterInfoView extends JPanel
 				voterInfo[5] = (String)state.getSelectedItem();
 				voterInfo[6] = zip.getIsDefault()?null:zip.getText().trim();
 				voterInfo[7] = birthday.getIsDefault()?null:birthday.getText().trim();
+				//voterInfo[8] = (String)sex.getSelectedItem();
+				//voterInfo[9] = (String)race.getSelectedItem();
 
 				// Check to ensure new voter isn't the database. Returns true if new voter is not in database
 				// Returns false if they already are
 				String searchKey = Voter.getSearchKeyNAD(voterInfo);
+				long locInFile;
 				if (!Voter.checkKeyNAD(searchKey))
 					Voter.register(voterInfo);
-					long locInFile = 0l;
+					locInFile = Voter.getKeyValNAD(searchKey);
 					currentDriver.switchScene(new VoterHomeView(currentDriver,voterInfo,locInFile));
 			}
 			else {}

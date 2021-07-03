@@ -8,12 +8,25 @@ public class Ballot extends Database {
 	private static File index;
 	private static HashMap<String, Long> map;
 	private static Set<String> keys;
+	private static String[] statesList;
+	
+	static {
+		statesList = new String[]{"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+                				  "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+                				  "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+                				  "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+                				  "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"};
+		for(int i = 0; i < statesList.length; i++)
+		{
+			Ballot.loadData(statesList[i]);
+		}
+	}
 
 	public static boolean checkKey(String key) { //true if key exists
 		return keys.contains(key);
 	}
 
-	public static long getKeyVal(String key) { //returns key value
+	public static long getKeyVal(String key) { //true if key exists
 		return map.get(key);
 	}
 

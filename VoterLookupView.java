@@ -101,7 +101,7 @@ public class VoterLookupView extends JPanel
         backY = 8/10.0;
         back.addActionListener(e -> {
             try {
-                currentDriver.switchScene(new AdminHomeView(l));
+                currentDriver.switchScene(new AdminHomeView(l, Candidate.getIsAnElection()));
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
             }

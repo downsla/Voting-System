@@ -1,11 +1,7 @@
 import java.io.File;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class Voter extends Database{
 	
@@ -33,7 +29,7 @@ public class Voter extends Database{
 	public static long getKeyValVD(String key) { //gets pointer in file from key
 		return mapVD.get(key);
 	}
-	
+
 	public static String[] lookup(long l) { //takes pointer and returns all voter info
 		String[] sa = readFile(l, voterFile); //puts line from file into string array, prepares to format
 		String[] sr = new String[11];
@@ -179,12 +175,12 @@ public class Voter extends Database{
 		return b;
 	}
 	
-	public static String[] editLine(String[] newInfo, int startIndex, long l) { //edits an exist voter info using array of new info, the index to start overwriting, and the pointer to the voter file
+	public static String[] editLine(String[] voterInfo, int startIndex, long l) { //edits an exist voter info using array of new info, the index to start overwriting, and the pointer to the voter file
 		String[] sa = new String[11];
 		String[] sc = lookup(l); //gets current all voter info
 		for(int i = 0; i < sa.length; i++) { //inserts new info
-			if(startIndex <= i && i < (startIndex + newInfo.length)) {
-				sa[i] = newInfo[i - startIndex];
+			if(startIndex <= i && i < (startIndex + voterInfo.length)) {
+				sa[i] = voterInfo[i - startIndex];
 			} else {
 				sa[i] = sc[i];
 			}
@@ -219,5 +215,4 @@ public class Voter extends Database{
 		String[] temp = new String[] {voterInfo[0], voterInfo[7]};
 		return String.join("", temp);
 	}
-
 }

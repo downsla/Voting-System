@@ -16,7 +16,6 @@ public class Launcher extends JFrame implements ComponentListener
 	private float widthRatio;
 	private float heightRatio;
 	private Dimension size;
-	//private JFrame this;
 	private JPanel currentScene;
 	
 	public static void main(String[] args) throws InterruptedException 
@@ -43,9 +42,7 @@ public class Launcher extends JFrame implements ComponentListener
 			}
 		}
 		
-		//this = new JFrame();
 		this.setSize((int)(size.getWidth()*widthRatio),(int)(size.getHeight()*heightRatio));
-		//this.setSize(1000,700);
 		if(startFullScreen)
 		{
 			this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -72,11 +69,6 @@ public class Launcher extends JFrame implements ComponentListener
 		this.repaint();
 	}
 	
-	/*public void setEnabled(boolean b)
-	{
-		this.setEnabled(b);
-	}*/
-
 	@Override
 	public void componentResized(ComponentEvent arg0) 
 	{

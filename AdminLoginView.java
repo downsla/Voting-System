@@ -97,7 +97,7 @@ public class AdminLoginView extends JPanel
 	{
 		if(validateInput())
 		{
-			try { currentDriver.switchScene(new AdminHomeView(currentDriver)); }
+			try { currentDriver.switchScene(new AdminHomeView(currentDriver, Candidate.getIsAnElection())); }
 			catch (InterruptedException interruptedException) { System.out.println("Exception Dummy"); interruptedException.printStackTrace(); }
 		}
 		else

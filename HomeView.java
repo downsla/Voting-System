@@ -41,7 +41,6 @@ public class HomeView extends JPanel
 		voterY = 1/2.0;
 		voter.addActionListener(e -> {
 			currentDriver.switchScene(new VoterLoginView(currentDriver));
-			//currentDriver.switchScene(new VoterHomeView(currentDriver,new String[] {"","","Nicholas"}, 0l));
 		});
 		
 		admin = new JButton("Admin");
@@ -72,7 +71,6 @@ public class HomeView extends JPanel
 		voter.setBounds(f(x, voterX, voter.getWidth()), f(y, voterY, voter.getHeight()), voter.getWidth(), voter.getHeight());	
 		admin.setBounds(f(x, adminX, admin.getWidth()), f(y, adminY, admin.getHeight()), admin.getWidth(), admin.getHeight());
 		welcomeTag.setBounds(f(x, welcomeTagX, welcomeTag.getWidth()), f(y, welcomeTagY, welcomeTag.getHeight()), welcomeTag.getWidth(), welcomeTag.getHeight());
-		//System.out.println(welcomeTag.getWidth());
 	}
 	
 	private static int f(int n, double m, int z)

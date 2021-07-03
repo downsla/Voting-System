@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -26,17 +27,21 @@ public class VoterHomeView extends JPanel
 	private long locInFile;
 	
 	private boolean showStats;
-	
+	private CastBallotView popup;
 	private boolean loaded;
 
 	public VoterHomeView(Launcher l, String[] vi, long lif)
-	{
+	{	
+		voterInfo = Voter.lookup(lif);
 		currentDriver = l;
 		
 		this.setLayout(null);
 		
-		voterInfo = vi;
+		//voterInfo = vi;
 		locInFile = lif;
+		System.out.println(Arrays.toString(vi));
+		
+		Ballot.loadData(voterInfo[5]);
 		
 		welcomeTag = new JLabel("Welcome " + voterInfo[1] + " " + voterInfo[2]);
         welcomeTag.setFont(new Font("Consolas", Font.PLAIN, 16));
@@ -64,6 +69,17 @@ public class VoterHomeView extends JPanel
 		vote.setSize(100,50);
 		voteX = .3;
 		voteY = .2;
+		vote.addActionListener(e -> {
+			currentDriver.setEnabled(false);
+			popup = new CastBallotView(currentDriver, this, voterInfo);
+		});
+		System.out.println(voterInfo[0] + " " + Ballot.checkKey(voterInfo[0]));
+		if(Ballot.checkKey(voterInfo[0]))
+		{
+			vote.setEnabled(false);
+		}
+		
+		//System.out.println(Arrays.toString(Candidate.lookup("4237996769", 2)));
 		
 		displayStats = new JButton("Show Election Stats");
 		displayStats.setSize(200,50);
@@ -131,5 +147,10 @@ public class VoterHomeView extends JPanel
 		stats.setBounds((int)(x*statsX-statsXOffset), (int)(y*statsY+statsYOffset), x, (int)(y*(1-statsY)));
 	    bar.setBounds((int)(x*barX-barXOffset), (int)(y*barY+barYOffset), this.getWidth(), bar.getHeight());
 	    welcomeTag.setBounds((int)(x*welcomeTagX-welcomeTag.getWidth()/2), (int)(y*welcomeTagY-welcomeTag.getHeight()/2), welcomeTag.getWidth(), welcomeTag.getHeight());
+	}
+	
+	public void disableVote()
+	{
+		vote.setEnabled(false);
 	}
 }

@@ -47,11 +47,11 @@ public class AddedCandidateView extends JPanel
         adminX = 4/20.0;
         adminY = 1/2.0;
         admin.addActionListener(e -> {
-            try {
-                l.switchScene(new AdminHomeView(l));
+            /*try {
+                //l.switchScene(new AdminHomeView(l));
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
-            }
+            }*/
         } );
 
         this.add(welcomeTag);
