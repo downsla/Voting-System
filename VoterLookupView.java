@@ -8,6 +8,7 @@ public class VoterLookupView extends JPanel
 
     private JLabel welcomeTag;
     private double welcomeTagX, welcomeTagY;
+
     private TextField vuid;
     private double vuidX, vuidY;
     private TextField birthday;
@@ -23,13 +24,6 @@ public class VoterLookupView extends JPanel
 
     private Color invalid = new Color(255, 225, 200);
     private Color defaultBackground = new Color(250, 250, 250);
-
-    private String[] states =
-            {"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
-                    "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-                    "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-                    "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
-                    "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"};
 
     private boolean loaded;
     private String[] voterInfo = new String[11];
@@ -84,11 +78,12 @@ public class VoterLookupView extends JPanel
                 // If the search string is in the HashMap, then pull the full voter info from the CSV
                 if (Voter.checkKeyVD(search)){
                     long keyValVD = Voter.getKeyValVD(search);
-                    resultsPage.setVoterInfo(Voter.lookup(keyValVD));
+                    voterInfo = Voter.lookup(keyValVD);
+                    resultsPage.setVoterInfo(voterInfo);
                 }
                 // Else, voter info not in Hashmap display null string array
                 else {
-                    resultsPage.setVoterInfo(new String[11]);
+                    resultsPage.setVoterInfo(new String[] {"Invalid"});
                 }
                 switchPage(resultsPage);
             }

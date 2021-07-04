@@ -35,20 +35,12 @@ public class RegisterVoterInfoView extends JPanel
 	private Color invalid = new Color(255, 225, 200);
 	private Color defaultBackground = new Color(250, 250, 250);
 
-	private String[] states =
-			{"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
-			 "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-			 "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-			 "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
-			 "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"};
+	private String[] sexes = Candidate.getSexList();
 
-	private String[] sexes =
-			{"Male", "Female",};
-
-	private String[] races =
-			{"White", "African American", "Asian", "American Indian", "Hispanic", "Pacific Islander"};
+	private String[] races = Candidate.getRaceList();
 	
 	private String[] voterInfo;
+	private static String[] voterWords = VoterLoginView.getVoterWords();
 
 	private boolean loaded;
 
@@ -61,7 +53,7 @@ public class RegisterVoterInfoView extends JPanel
 		this.setLayout(null);
 
 		firstName = new TextField();
-		firstName.setPlaceholder("First Name");
+		firstName.setPlaceholder(voterWords[1]);
 		firstName.setBackground(defaultBackground);
 		firstName.setSize(100, 50);
 		firstNameX = 4/20.0;
@@ -72,7 +64,7 @@ public class RegisterVoterInfoView extends JPanel
 		}
 
 		lastName = new TextField();
-		lastName.setPlaceholder("Last Name");
+		lastName.setPlaceholder(voterWords[2]);
 		lastName.setBackground(defaultBackground);
 		lastName.setSize(100, 50);
 		lastNameX = 10/20.0;
@@ -83,7 +75,7 @@ public class RegisterVoterInfoView extends JPanel
 		}
 
 		birthday = new TextField();
-		birthday.setPlaceholder("Birthday: DDMMYYYY");
+		birthday.setPlaceholder(voterWords[7] + " DDMMYYYY");
 		birthday.setBackground(defaultBackground);
 		birthday.setSize(150,50);
 		birthdayX = 16/20.0;
@@ -94,7 +86,7 @@ public class RegisterVoterInfoView extends JPanel
 		}
 
 		address = new TextField();
-		address.setPlaceholder("Address");
+		address.setPlaceholder(voterWords[3]);
 		address.setBackground(defaultBackground);
 		address.setSize(150, 50);
 		addressX = 4/20.0;
@@ -105,7 +97,7 @@ public class RegisterVoterInfoView extends JPanel
 		}
 
 		city = new TextField();
-		city.setPlaceholder("City");
+		city.setPlaceholder(voterWords[4]);
 		city.setBackground(defaultBackground);
 		city.setSize(100,50);
 		cityX = 7.5/20.0;
@@ -115,8 +107,8 @@ public class RegisterVoterInfoView extends JPanel
 			city.setText(voterInfo[4]);
 		}
 
-		state = new JComboBox<String>(states);
-		state.insertItemAt("State",0); //Check they don't leave "State" selected
+		state = new JComboBox<String>(Candidate.getStatesList());
+		state.insertItemAt(voterWords[5],0); //Check they don't leave "State" selected
 		state.setSelectedIndex(0);
 		state.setBackground(defaultBackground);
 		state.setSize(50,20);
@@ -128,7 +120,7 @@ public class RegisterVoterInfoView extends JPanel
 		}
 
 		zip = new TextField();
-		zip.setPlaceholder("ZIP (5 digits)");
+		zip.setPlaceholder(voterWords[6] + " (5 digits)");
 		zip.setBackground(defaultBackground);
 		zip.setSize(100,50);
 		zipX = 11.75/20.0;
@@ -139,37 +131,37 @@ public class RegisterVoterInfoView extends JPanel
 		}
 
 		race = new JComboBox<String>(races);
-		race.insertItemAt("Race",0); //Check they don't leave "Race" selected
+		race.insertItemAt(voterWords[9],0); //Check they don't leave "Race" selected
 		race.setSelectedIndex(0);
 		race.setBackground(defaultBackground);
 		race.setSize(100,20);
 		raceX = 14/20.0;
 		raceY = 5/10.0;
 
-		race.addActionListener(e -> {
+		race.addActionListener(e -> { 
 			String getRace = (String) race.getSelectedItem();
-			if ("White".equals(getRace)) {
-				voterInfo[9] = "W";
+			if (races[0].equals(getRace)) {
+				voterInfo[9] = "N";
 			}
-			else if("African American".equals(getRace)) {
+			else if(races[1].equals(getRace)) {
 				voterInfo[9] = "A";
 			}
-			else if("Asian".equals(getRace)) {
-				voterInfo[9] = "S";
+			else if(races[2].equals(getRace)) {
+				voterInfo[9] = "B";
 			}
-			else if("American Indian".equals(getRace)) {
-				voterInfo[9] = "A";
-			}
-			else if("Hispanic".equals(getRace)) {
+			else if(races[3].equals(getRace)) {
 				voterInfo[9] = "H";
 			}
-			else if("Pacific Islander".equals(getRace)) {
+			else if(races[4].equals(getRace)) {
 				voterInfo[9] = "P";
+			}
+			else if(races[5].equals(getRace)) {
+				voterInfo[9] = "W";
 			}
 		});
 
 		sex = new JComboBox<String>(sexes);
-		sex.insertItemAt("Sex",0); //Check they don't leave "Sex" selected
+		sex.insertItemAt(voterWords[8],0); //Check they don't leave "Sex" selected
 		sex.setSelectedIndex(0);
 		sex.setBackground(defaultBackground);
 		sex.setSize(50,20);
@@ -178,11 +170,14 @@ public class RegisterVoterInfoView extends JPanel
 
 		sex.addActionListener(e -> {
 			String getSex = (String) sex.getSelectedItem();
-			if ("Male".equals(getSex)) {
+			if (sexes[0].equals(getSex)) {
 				voterInfo[8] = "M";
 			}
-			else if("Female".equals(getSex)) {
+			else if(sexes[1].equals(getSex)) {
 				voterInfo[8] = "F";
+			}
+			else if(sexes[2].equals(getSex)) {
+				voterInfo[8] = "O";
 			}
 		});
 
@@ -203,13 +198,16 @@ public class RegisterVoterInfoView extends JPanel
 				voterInfo[5] = (String)state.getSelectedItem();
 				voterInfo[6] = zip.getIsDefault()?null:zip.getText().trim();
 				voterInfo[7] = birthday.getIsDefault()?null:birthday.getText().trim();
+				//voterInfo[8] = (String)sex.getSelectedItem();
+				//voterInfo[9] = (String)race.getSelectedItem();
 
 				// Check to ensure new voter isn't the database. Returns true if new voter is not in database
 				// Returns false if they already are
 				String searchKey = Voter.getSearchKeyNAD(voterInfo);
+				long locInFile;
 				if (!Voter.checkKeyNAD(searchKey))
-					Voter.register(voterInfo);
-					long locInFile = 0l;
+					voterInfo = Voter.register(voterInfo);
+					locInFile = Voter.getKeyValNAD(searchKey);
 					currentDriver.switchScene(new VoterHomeView(currentDriver,voterInfo,locInFile));
 			}
 			else {}

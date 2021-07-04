@@ -36,16 +36,14 @@ public class VoterLoginView extends JPanel
 	private Color invalid = new Color(255, 225, 200);
 	private Color defaultBackground = new Color(250, 250, 250);
 	
-	private String[] states = 
-			{"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
-			 "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-			 "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-			 "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
-			 "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"};
-	
 	private boolean loaded;
 	
 	private String[] voterInfo;
+	private static String[] voterWords = {"VUID", "First Name", "Last Name", "Address", "City", "State", "Zip", "Birthday", "Sex", "Race", "Expiration Date"};
+	
+	public static String[] getVoterWords() {
+		return voterWords;
+	}
 	
 	public VoterLoginView(Launcher l)
 	{
@@ -55,42 +53,42 @@ public class VoterLoginView extends JPanel
 		this.setLayout(null);
 		
 		firstName = new TextField();
-		firstName.setPlaceholder("First Name");
+		firstName.setPlaceholder(voterWords[1]);
 		firstName.setBackground(defaultBackground);
 		firstName.setSize(100, 50);
 		usernameX = 5/18.0;
 		usernameY = 1/5.0;
 		
 		lastName = new TextField();
-		lastName.setPlaceholder("Last Name");
+		lastName.setPlaceholder(voterWords[2]);
 		lastName.setBackground(defaultBackground);
 		lastName.setSize(100, 50);
 		passwordX = 9/18.0;
 		passwordY = 1/5.0;
 		
 		birthday = new TextField();
-		birthday.setPlaceholder("Birthday: DDMMYYYY");
+		birthday.setPlaceholder(voterWords[7] + " DDMMYYYY");
 		birthday.setBackground(defaultBackground);
 		birthday.setSize(150,50);
 		birthdayX = 13/18.0;
 		birthdayY = 1/5.0;
 		
 		address = new TextField();
-		address.setPlaceholder("Address");
+		address.setPlaceholder(voterWords[3]);
 		address.setBackground(defaultBackground);
 		address.setSize(150, 50);
 		addressX = 3/16.0;
 		addressY = 1/2.0;
 		
 		city = new TextField();
-		city.setPlaceholder("City");
+		city.setPlaceholder(voterWords[4]);
 		city.setBackground(defaultBackground);
 		city.setSize(100,50);
 		cityX = 7/16.0;
 		cityY = 1/2.0;
 		
-		state = new JComboBox<String>(states);
-		state.insertItemAt("State",0); //Check they don't leave "State" selected
+		state = new JComboBox<String>(Candidate.getStatesList());
+		state.insertItemAt(voterWords[5],0); //Check they don't leave "State" selected
 		state.setSelectedIndex(0);
 		state.setBackground(defaultBackground);
 		state.setSize(100,20);
@@ -98,7 +96,7 @@ public class VoterLoginView extends JPanel
 		stateY = 1/2.0;
 		
 		zip = new TextField();
-		zip.setPlaceholder("ZIP (5 digits)");
+		zip.setPlaceholder(voterWords[6] + " (5 digits)");
 		zip.setBackground(defaultBackground);
 		zip.setSize(100,50);
 		zipX = 17/20.0;
@@ -138,10 +136,10 @@ public class VoterLoginView extends JPanel
 					popup.setSize(600,400);	
 					popup.setResizable(false);
 					popup.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-					JLabel p1 = new JLabel("You were not in the system;");
+					JLabel p1 = new JLabel("You were not in the system,");
 					p1.setHorizontalAlignment(JLabel.RIGHT);
 					popup.add(p1);
-					popup.add(new JLabel(" Please register or try again."));
+					popup.add(new JLabel(" please register or try again."));
 					JPanel pan1 = new JPanel();
 					JButton tryAgain = new JButton("Try Again");
 					tryAgain.addActionListener(e2 -> {
@@ -173,10 +171,35 @@ public class VoterLoginView extends JPanel
 				{
 					locInFile = Voter.getKeyValNAD(searchKey);
 					voterInfo = Voter.lookup(locInFile);
+					
+					if(Voter.isExpired(voterInfo[10])) {
+						voterInfo = Voter.editLine(new String[] {Voter.genExpDate()}, 10, locInFile);
+						JFrame popup = new JFrame();
+						popup.setLayout(new GridLayout(2,2));
+						popup.setLocationRelativeTo(null);
+						popup.setSize(600,400);	
+						popup.setResizable(false);
+						popup.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+						JLabel p1 = new JLabel("Your VUID was expired,");
+						p1.setHorizontalAlignment(JLabel.RIGHT);
+						popup.add(p1);
+						popup.add(new JLabel(" press ok to renew."));
+						JPanel pan1 = new JPanel();
+						JPanel pan2 = new JPanel();
+						JButton ok = new JButton("Ok");
+						ok.addActionListener(e2 -> {
+							currentDriver.setEnabled(true);
+							popup.dispose();
+						});
+						pan1.add(ok);
+						popup.add(pan2);
+						popup.add(pan1);
+						popup.setVisible(true);
+						popup.setAlwaysOnTop(true);
+					}
 					currentDriver.switchScene(new VoterHomeView(currentDriver,voterInfo, locInFile));
 				}
 			}
-			else {}
 		});
 		
 		back = new JButton();

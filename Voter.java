@@ -34,6 +34,10 @@ public class Voter extends Database{
 		return mapVD.get(key);
 	}
 	
+	public static int[] getSpacing() {
+		return spacing;
+	}
+	
 	public static String[] lookup(long l) { //takes pointer and returns all voter info
 		String[] sa = readFile(l, voterFile); //puts line from file into string array, prepares to format
 		String[] sr = new String[11];
@@ -191,15 +195,15 @@ public class Voter extends Database{
 		}
 		String sn = formatLine(sa, spacing, 1); //formats all new info to write to voter file
 		overwriteFile(sn, l, voterFile);
-		mapNAD.put(getSearchKeyNAD(sa), l); //adds new key with preexisting value to hash map that searches using updated info (VD does not need to be updated as VUID and DOB never change)
 		mapNAD.remove(getSearchKeyNAD(sc)); //removes old key from NA search string using old saved lookup
+		mapNAD.put(getSearchKeyNAD(sa), l); //adds new key with preexisting value to hash map that searches using updated info (VD does not need to be updated as VUID and DOB never change)
 		saveHash(mapNAD, indexNAD); //saves updated hash map
 		keysNAD = mapNAD.keySet();
 		return sa;
 	}
 	
 	public static void loadData() { //loads necessary global variable files and creates their hash maps and key sets
-		File[] fs = setFile(new String[] {"voters.csv", "indexNA.txt", "indexVD.txt"});
+		File[] fs = setFile(new String[] {"files/voters.csv", "files/indexNA.txt", "files/indexVD.txt"});
 		voterFile = fs[0];
 		indexNAD = fs[1];
 		indexVD = fs[2];

@@ -18,13 +18,6 @@ public class CandidateShellView extends JPanel
     
     private Color invalid = new Color(255, 225, 200);
     private Color defaultBackground = new Color(250, 250, 250);
-    
-    private String[] states =
-        {"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
-                "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-                "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-                "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
-                "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"};
 
     private String[] parties =
         {"Democrat", "Republican", "Third Party"};
@@ -49,7 +42,7 @@ public class CandidateShellView extends JPanel
         nameX = 0;
         nameY = 1/10.0;
         
-        state = new JComboBox<String>(states);
+        state = new JComboBox<String>(Candidate.getStatesList());
         state.insertItemAt("State", 0);
         state.setSelectedIndex(0);
         state.setSize(150, 20);
@@ -63,7 +56,7 @@ public class CandidateShellView extends JPanel
         positionX = 0;
         positionY = 5/10.0;
         position.addActionListener(e -> {
-        	if(position.getSelectedItem().equals("President/Vice"))
+        	if(position.getSelectedItem().equals(positions[0]))
         	{
         		state.setEnabled(false);
         		parent.setVice(true);
@@ -127,7 +120,7 @@ public class CandidateShellView extends JPanel
 		
 		if(!isVice)
 		{
-			if(state.getSelectedItem().equals("State") && !position.getSelectedItem().equals("President/Vice"))
+			if(state.getSelectedItem().equals("State") && !position.getSelectedItem().equals(positions[0]))
 			{
 				isValid = false;
 				state.setBackground(invalid);

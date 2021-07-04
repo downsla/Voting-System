@@ -29,7 +29,7 @@ public class Ballot extends Database {
 	}
 	
 	public static void loadData(String state) { //loads necessary global variable files and creates their hash maps and key sets
-		File[] fs = setFiles(new String[] {"ballots", "indexB"}, state); 
+		File[] fs = setFiles(new String[] {"files/ballots", "files/indexB"}, state); 
 		ballotFile = fs[0];
 		index = fs[1];
 		map = loadHash(index);
