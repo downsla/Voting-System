@@ -32,13 +32,14 @@ public class DisplayCandidateStatsView extends JPanel
 
 	public DisplayCandidateStatsView (Launcher l)
 	{
+
 		currentDriver = l;
 
 		this.setLayout(null);
 
 		label1 = new JLabel("Please select the state for which you would like to view the stats:");
 		label1.setFont(new Font("Consolas", Font.PLAIN, 16));
-		label1.setSize(400, 20);
+		label1.setSize(500, 20);
 		label1.setVerticalAlignment(JLabel.BOTTOM);
 		label1.setHorizontalAlignment(JLabel.CENTER);
 		label1X = 2 / 7.0;
@@ -141,8 +142,7 @@ public class DisplayCandidateStatsView extends JPanel
 		}
 		return (formatted);
 	}
-
-
+	
 	private static String formatPrint(String[] sArr) {
 		int[] chLen = new int[sArr.length - 1];
 		int[] temp = new int[] {60, 22, 16, 16, 19, 7, 8, 7, 34, 7, 27, 20, 43, 7};
