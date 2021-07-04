@@ -15,6 +15,7 @@ import java.util.HashMap;
 
 public class Database {
 
+	@SuppressWarnings("unchecked")
 	public static HashMap<String, Long> loadHash(File f) { //reads hash map from file
 		HashMap<String, Long> hm = new HashMap<String, Long>();
 		if(f.length() != 0) {
