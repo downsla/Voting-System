@@ -59,7 +59,7 @@ public class VoterLookupView extends JPanel
         vuidY = 1/5.0;
 
         birthday = new TextField();
-        birthday.setPlaceholder("Birthday: DDMMYYYY");
+        birthday.setPlaceholder("Birthday: MMDDYYYY");
         birthday.setBackground(defaultBackground);
         birthday.setSize(150,50);
         birthdayX = 27/40.0;

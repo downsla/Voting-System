@@ -68,7 +68,7 @@ public class VoterLoginView extends JPanel
 		passwordY = 1/5.0;
 		
 		birthday = new TextField();
-		birthday.setPlaceholder(voterWords[7] + " DDMMYYYY");
+		birthday.setPlaceholder(voterWords[7] + " MMDDYYYY");
 		birthday.setBackground(defaultBackground);
 		birthday.setSize(150,50);
 		birthdayX = 13/18.0;
@@ -269,22 +269,25 @@ public class VoterLoginView extends JPanel
 		back.setBounds((int)(x* backX - back.getWidth()/2), (int)(y* backY - back.getHeight()/2), back.getWidth(), back.getHeight());
 		register.setBounds((int)(x* registerX - register.getWidth()/2), (int)(y* registerY - register.getHeight()/2), register.getWidth(), register.getHeight());
 	}
-	
+
 	private boolean validateInput()
 	{
 		boolean isValid = true;
-		
-		if(firstName.getIsDefault())
+
+		if(!firstName.getText().matches("^[a-zA-Z_' ]*$") || firstName.getText().equals("First Name")
+				||firstName.getText().length() > 20)
 		{
 			firstName.setBackground(invalid);
 			isValid = false;
 		}
 		else
 		{
+
 			firstName.setBackground(defaultBackground);
 		}
-		
-		if(lastName.getIsDefault())
+
+		if(!lastName.getText().matches("^[a-zA-Z_' ]*$") || lastName.getText().equals("Last Name")
+				|| lastName.getText().length() > 20 )
 		{
 			lastName.setBackground(invalid);
 			isValid = false;
@@ -293,8 +296,8 @@ public class VoterLoginView extends JPanel
 		{
 			lastName.setBackground(defaultBackground);
 		}
-		
-		if(!birthday.getText().matches("\\d{8}"))
+
+		if(!birthday.getText().matches("\\d{8}") || (Voter.getAge(birthday.getText()) < 18 ))
 		{
 			birthday.setBackground(invalid);
 			isValid = false;
@@ -303,8 +306,9 @@ public class VoterLoginView extends JPanel
 		{
 			birthday.setBackground(defaultBackground);
 		}
-		
-		if(address.getIsDefault())
+
+		if(!address.getText().matches("^[a-zA-Z0-9_' ]*$") || address.getText().equals("Address")
+				|| address.getText().length() > 40 )
 		{
 			address.setBackground(invalid);
 			isValid = false;
@@ -313,8 +317,9 @@ public class VoterLoginView extends JPanel
 		{
 			address.setBackground(defaultBackground);
 		}
-		
-		if(city.getIsDefault())
+
+		if(!city.getText().matches("^[a-zA-Z_' ]*$") || city.getText().equals("City")
+				|| lastName.getText().length() > 20 )
 		{
 			city.setBackground(invalid);
 			isValid = false;
@@ -323,7 +328,7 @@ public class VoterLoginView extends JPanel
 		{
 			city.setBackground(defaultBackground);
 		}
-		
+
 		if(state.getSelectedItem().equals("State"))
 		{
 			state.setBackground(invalid);
@@ -333,7 +338,7 @@ public class VoterLoginView extends JPanel
 		{
 			state.setBackground(defaultBackground);
 		}
-		
+
 		if(!zip.getText().matches("\\d{5}"))
 		{
 			zip.setBackground(invalid);
@@ -343,7 +348,7 @@ public class VoterLoginView extends JPanel
 		{
 			zip.setBackground(defaultBackground);
 		}
-		
+
 		return isValid;
 	}
 }

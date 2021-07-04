@@ -304,7 +304,6 @@ public class TestDriver_Kirk {
 		 */
 
 		loadAllData("TX"); //set data files
-		registerNewVoter();
-		
+		registerNewTestVoterData();
 	}
 }

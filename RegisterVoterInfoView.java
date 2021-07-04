@@ -75,7 +75,7 @@ public class RegisterVoterInfoView extends JPanel
 		}
 
 		birthday = new TextField();
-		birthday.setPlaceholder(voterWords[7] + " DDMMYYYY");
+		birthday.setPlaceholder(voterWords[7] + " MMDDYYYY");
 		birthday.setBackground(defaultBackground);
 		birthday.setSize(150,50);
 		birthdayX = 16/20.0;
@@ -262,17 +262,20 @@ public class RegisterVoterInfoView extends JPanel
 	{
 		boolean isValid = true;
 
-		if(firstName.getIsDefault())
+		if(!firstName.getText().matches("^[a-zA-Z_' ]*$") || firstName.getText().equals("First Name")
+				||firstName.getText().length() > 20)
 		{
 			firstName.setBackground(invalid);
 			isValid = false;
 		}
 		else
 		{
+
 			firstName.setBackground(defaultBackground);
 		}
 
-		if(lastName.getIsDefault())
+		if(!lastName.getText().matches("^[a-zA-Z_' ]*$") || lastName.getText().equals("Last Name")
+				|| lastName.getText().length() > 20 )
 		{
 			lastName.setBackground(invalid);
 			isValid = false;
@@ -282,7 +285,7 @@ public class RegisterVoterInfoView extends JPanel
 			lastName.setBackground(defaultBackground);
 		}
 
-		if(!birthday.getText().matches("\\d{8}"))
+		if(!birthday.getText().matches("\\d{8}") || (Voter.getAge(birthday.getText()) < 18 ))
 		{
 			birthday.setBackground(invalid);
 			isValid = false;
@@ -292,7 +295,8 @@ public class RegisterVoterInfoView extends JPanel
 			birthday.setBackground(defaultBackground);
 		}
 
-		if(address.getIsDefault())
+		if(!address.getText().matches("^[a-zA-Z0-9_' ]*$") || address.getText().equals("Address")
+				|| address.getText().length() > 40 )
 		{
 			address.setBackground(invalid);
 			isValid = false;
@@ -302,7 +306,8 @@ public class RegisterVoterInfoView extends JPanel
 			address.setBackground(defaultBackground);
 		}
 
-		if(city.getIsDefault())
+		if(!city.getText().matches("^[a-zA-Z_' ]*$") || city.getText().equals("City")
+				|| lastName.getText().length() > 20 )
 		{
 			city.setBackground(invalid);
 			isValid = false;
@@ -317,10 +322,19 @@ public class RegisterVoterInfoView extends JPanel
 			state.setBackground(invalid);
 			isValid = false;
 		}
-
 		else
 		{
 			state.setBackground(defaultBackground);
+		}
+
+		if(!zip.getText().matches("\\d{5}"))
+		{
+			zip.setBackground(invalid);
+			isValid = false;
+		}
+		else
+		{
+			zip.setBackground(defaultBackground);
 		}
 
 		if(sex.getSelectedItem().equals("Sex"))
@@ -342,16 +356,6 @@ public class RegisterVoterInfoView extends JPanel
 		else
 		{
 			race.setBackground(defaultBackground);
-		}
-
-		if(!zip.getText().matches("\\d{5}"))
-		{
-			zip.setBackground(invalid);
-			isValid = false;
-		}
-		else
-		{
-			zip.setBackground(defaultBackground);
 		}
 
 		return isValid;
