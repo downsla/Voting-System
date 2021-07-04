@@ -5,15 +5,24 @@ public class TestDriver_Liam {
 	public static String formatPrint(String[][] sArr) {
 		StringBuilder sb = new StringBuilder();
 		int max = sArr[0][0].length();
+		String[][] elec = new String[sArr.length][3];
+		Arrays.fill(elec[0], "");
 		for(int i = 1; i < sArr.length; i++) {
 			int temp = sArr[i][0].length();
 			if(max < temp) {
 				max = temp;
 			}
+			Arrays.fill(elec[i], "");
+		}
+		if(14 < sArr[0].length) {
+			elec = Candidate.getElecVotes(sArr);
 		}
 		for(int i = 0; i < sArr.length; i++) {
 			int[] chLen = new int[sArr[i].length - 1];
 			int[] temp = new int[] {max + 2, 12, 16, 16, 19, 7, 8, 7, 34, 7, 27, 20, 43, 7};
+			if(sArr[0].length == 4) {
+				temp[2] = 11;
+			}
 			for(int j = 0; j < chLen.length && j < temp.length; j++) {
 				chLen[j] = temp[j];
 			}
@@ -29,7 +38,13 @@ public class TestDriver_Liam {
 				Arrays.fill(ch, ' ');
 				sb.append(sArr[i][j]).append(ch);
 			}
-			sb.append(sArr[i][sArr[i].length - 1] + "\n");
+			if(14 < sArr[0].length) {
+				char[] ch = new char[9 - sArr[i][sArr[i].length - 1].length()];
+				Arrays.fill(ch, ' ');
+				sb.append(sArr[i][sArr[i].length - 1]).append(ch).append(elec[i][2]).append("\n");
+			} else {
+				sb.append(sArr[i][sArr[i].length - 1]).append("\n");
+			}
 		}
 		return sb.toString();
 		
@@ -129,8 +144,6 @@ public class TestDriver_Liam {
 
 		
 		Candidate.clear(); //clears files for test so upon restart, candidates aren't readded
-		Candidate.loadData("LA");
-		Candidate.clear();
 		
 	}
 
