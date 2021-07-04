@@ -3,18 +3,19 @@ import java.awt.Color;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class CandidateShellView extends JPanel
 {
 	private AddCandidateView parent;
 	
 	private TextField name;
-    private double nameX, nameY;
+    private double nameY;
     private JComboBox<String> state;
-    private double stateX, stateY;
+    private double stateY;
     private JComboBox<String> position;
-    private double positionX, positionY;
+    private double positionY;
     private JComboBox<String> party;
-    private double partyX, partyY;
+    private double partyY;
     
     private Color invalid = new Color(255, 225, 200);
     private Color defaultBackground = new Color(250, 250, 250);
@@ -23,7 +24,7 @@ public class CandidateShellView extends JPanel
         {"Democrat", "Republican", "Third Party"};
 
     private String[] positions =
-        {"President/Vice", "Senator", "Congress", "Treasurer", "Etc"};
+        {"President/Vice", "Senator", "Congress", "Governor", "Secretary", "Treasurer", "Justice"};
     
     private boolean isVice;
     private boolean loaded;
@@ -36,24 +37,25 @@ public class CandidateShellView extends JPanel
 		this.setLayout(null);
 		
 		name = new TextField();
-        name.setPlaceholder("Candidate Name");
+		if(!isVice) {
+			name.setPlaceholder("Candidate Name");
+		} else {
+			name.setPlaceholder("Vice Name");
+		}  
         name.setBackground(defaultBackground);
         name.setSize(250, 50);
-        nameX = 0;
         nameY = 1/10.0;
         
         state = new JComboBox<String>(Candidate.getStatesList());
         state.insertItemAt("State", 0);
         state.setSelectedIndex(0);
         state.setSize(150, 20);
-        stateX = 0;
         stateY = 3/10.0;
         
         position = new JComboBox<String>(positions);
         position.insertItemAt("Position", 0);
         position.setSelectedIndex(0);
         position.setSize(150, 20);
-        positionX = 0;
         positionY = 5/10.0;
         position.addActionListener(e -> {
         	if(position.getSelectedItem().equals(positions[0]))
@@ -74,7 +76,6 @@ public class CandidateShellView extends JPanel
         party.insertItemAt("Party", 0);
         party.setSelectedIndex(0);
         party.setSize(150, 20);
-        partyX = 0;
         partyY = 7/10.0;
         
         if(!isVice)
@@ -95,7 +96,6 @@ public class CandidateShellView extends JPanel
 			return;
 		}
 		
-		int x = this.getWidth();
 		int y = this.getHeight();
 		
 		name.setBounds(10, (int)(y*nameY), name.getWidth(), name.getHeight());

@@ -203,7 +203,7 @@ public class Voter extends Database{
 	}
 	
 	public static void loadData() { //loads necessary global variable files and creates their hash maps and key sets
-		File[] fs = setFile(new String[] {"files/voters.csv", "files/indexNA.txt", "files/indexVD.txt"});
+		File[] fs = setFile(new String[] {"files/voters.csv", "files/indexNAD.txt", "files/indexVD.txt"});
 		voterFile = fs[0];
 		indexNAD = fs[1];
 		indexVD = fs[2];

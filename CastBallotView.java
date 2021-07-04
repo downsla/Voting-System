@@ -10,6 +10,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+@SuppressWarnings("serial")
 public class CastBallotView extends JFrame implements WindowListener, ComponentListener
 {
 	private Launcher currentDriver;

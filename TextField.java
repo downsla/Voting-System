@@ -5,6 +5,7 @@ import java.awt.event.FocusListener;
 
 import javax.swing.JTextField;
 
+@SuppressWarnings("serial")
 public class TextField extends JTextField implements FocusListener
 {
 

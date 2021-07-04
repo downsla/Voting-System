@@ -1,7 +1,11 @@
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class VoterLookupView extends JPanel
 {
     private Launcher currentDriver;
@@ -34,7 +38,7 @@ public class VoterLookupView extends JPanel
         
         lookupPage = new JPanel();
         lookupPage.setLayout(null);
-        resultsPage = new DisplayVoterInfoView(currentDriver, new String[11]);
+        resultsPage = new DisplayVoterInfoView(new String[11]);
 
         this.setLayout(null);
 

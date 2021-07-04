@@ -244,6 +244,7 @@ public class TestDriver_Kirk {
 		{
 			System.out.println("Individual is not 18 years old, and cannot register to vote");
 		}
+	scan.close();
 	}
 	
 	public static void main(String[] args) {

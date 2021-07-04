@@ -88,7 +88,6 @@ public class Candidate extends Database {
 	}
 	
 	public static void clearAll() { //clears files for new creation
-		String og = currentState;
 		for(int i = 0; i < statesList.length; i++) {
 			loadData(statesList[i]);
 			clear();
@@ -233,7 +232,7 @@ public class Candidate extends Database {
 			Arrays.fill(demo[i], 0);
 		}
 		Integer[][] vc = new Integer[cn][statesList.length];
-		String[][] stats = new String[cn + 1][cn + demo[0].length + statesList.length + 2];
+		String[][] stats = new String[cn + 1][2 + demo[0].length + statesList.length + 2];
 		for(int i = 0; i < statesList.length; i++) { //number of states (for testing purposes, only 2)
 			loadData(statesList[i]);
 			Integer[][] ia = getDemoLine();
@@ -264,9 +263,9 @@ public class Candidate extends Database {
 				sexList[0], sexList[1], sexList[2], 
 				raceList[0], raceList[1], raceList[2], raceList[3], raceList[4], raceList[5]};
 		System.arraycopy(temp, 0, stats[0], 0, temp.length);
-		System.arraycopy(statesList, 0, stats[0], 14, statesList.length);
+		System.arraycopy(statesList, 0, stats[0], temp.length, statesList.length);
 		String[] temp2 = new String[] {commonStrings[1], commonStrings[2]};
-		System.arraycopy(temp2, 0, stats[0], (14 + statesList.length), temp2.length);
+		System.arraycopy(temp2, 0, stats[0], (temp.length + statesList.length), temp2.length);
 		for(int i = 1; i < stats.length; i++) {
 			int ix = 0;
 			System.arraycopy(cand[i], 0, stats[i], ix, cand[i].length);

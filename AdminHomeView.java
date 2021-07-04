@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class AdminHomeView extends JPanel
 {
     private Launcher currentDriver;
@@ -90,10 +91,11 @@ public class AdminHomeView extends JPanel
         		candidates.clear();
         		cand.setText("Add Candidate");
         		finalize.setEnabled(true);
+        		isAnElection = false;
         	}
         	this.remove(content);
         	//this.repaint();
-        	content = new AddCandidateView(currentDriver, this);
+        	content = new AddCandidateView(this);
         	this.add(content);
         	System.out.println(candidates+"**********************");
         	//this.setVisible(true);
@@ -211,8 +213,10 @@ public class AdminHomeView extends JPanel
     	{
     		candidates.put(key, new ArrayList<String[]>());
     	}
-    	
-    	candidates.get(key).add(s);
+    	ArrayList<String[]> temp = candidates.get(key);
+    	temp.add(s);
+    	candidates.remove(key);
+    	candidates.put(key, temp);
     	System.out.println(candidates);
     }
     

@@ -1,5 +1,6 @@
-import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Arrays;
 
 import javax.swing.JButton;
@@ -9,9 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+@SuppressWarnings("serial")
 public class DisplayVoterInfoView extends JPanel
 {
-	private Launcher currentDriver;
 	
 	private JLabel voterDisplay, voterDisplay2;
 	
@@ -27,10 +28,9 @@ public class DisplayVoterInfoView extends JPanel
 	private JTextArea textArea;
 	private JFrame frame;
 	
-	public DisplayVoterInfoView(Launcher l, String[] vi)
+	public DisplayVoterInfoView(String[] vi)
 	{
 		voterInfo = vi;
-		currentDriver = l;
 		
 		this.setLayout(null);
     	
@@ -52,6 +52,7 @@ public class DisplayVoterInfoView extends JPanel
 		//voterDisplay
 		
 		ballot = new JButton();
+		ballot.setEnabled(true);
 		ballot.setText("Display Ballot");
 		ballot.setSize(200,50);
 		ballotX = 0.5;
@@ -59,6 +60,7 @@ public class DisplayVoterInfoView extends JPanel
 		ballot.addActionListener(e -> {
 			if(voterInfo.length == 11)
 			{
+				ballot.setEnabled(false);
 				displayStats(voterInfo);
 			}
 		});
@@ -118,7 +120,13 @@ public class DisplayVoterInfoView extends JPanel
 		scroll = new JScrollPane(textArea);
 		frame.add(scroll); //We add the scroll, since the scroll already contains the textArea
 		frame.pack();
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		frame.addWindowListener(new WindowAdapter() {
+	        public void windowClosing(WindowEvent e) {
+	        	ballot.setEnabled(true);
+	        }
+	    });
 	}
 	
 	private String formatDisplay(String vuid)

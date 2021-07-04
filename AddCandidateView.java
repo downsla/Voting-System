@@ -1,13 +1,11 @@
-import java.awt.Color;
 import java.util.Arrays;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class AddCandidateView extends JPanel
 {
-    private Launcher currentDriver;
 
     private JButton submit;
     private double submitX, submitY;
@@ -24,9 +22,8 @@ public class AddCandidateView extends JPanel
     private boolean isVice;
     private boolean loaded;
 
-    public AddCandidateView(Launcher l, AdminHomeView p)
+    public AddCandidateView(AdminHomeView p)
     {
-        currentDriver = l;
 
         this.setLayout(null);
         

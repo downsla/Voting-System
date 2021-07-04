@@ -1,10 +1,10 @@
 import java.awt.Color;
-import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class RegisterVoterInfoView extends JPanel
 {
 	private Launcher currentDriver;

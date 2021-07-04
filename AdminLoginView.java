@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
+@SuppressWarnings("serial")
 public class AdminLoginView extends JPanel
 {
 	private Launcher currentDriver;

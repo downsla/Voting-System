@@ -6,8 +6,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class VoterHomeView extends JPanel
 {
+
 	private Launcher currentDriver;
 	
     private JLabel welcomeTag;
@@ -24,10 +26,8 @@ public class VoterHomeView extends JPanel
     private double barX, barY, barXOffset, barYOffset;
     
 	private String[] voterInfo;
-	private long locInFile;
 	
 	private boolean showStats;
-	private CastBallotView popup;
 	private boolean loaded;
 
 	public VoterHomeView(Launcher l, String[] vi, long lif)
@@ -38,7 +38,6 @@ public class VoterHomeView extends JPanel
 		this.setLayout(null);
 		
 		//voterInfo = vi;
-		locInFile = lif;
 		System.out.println(Arrays.toString(vi));
 		
 		Ballot.loadData(voterInfo[5]);
@@ -71,7 +70,7 @@ public class VoterHomeView extends JPanel
 		voteY = .2;
 		vote.addActionListener(e -> {
 			currentDriver.setEnabled(false);
-			popup = new CastBallotView(currentDriver, this, voterInfo);
+			new CastBallotView(currentDriver, this, voterInfo);
 		});
 		System.out.println(voterInfo[0] + " " + Ballot.checkKey(voterInfo[0]));
 		if(Ballot.checkKey(voterInfo[0]) || (Candidate.getPosNum() == 0))
@@ -80,7 +79,7 @@ public class VoterHomeView extends JPanel
 		}
 		
 		//System.out.println(Arrays.toString(Candidate.lookup("4237996769", 2)));
-		stats = new DisplayCandidateStatsView(currentDriver);
+		stats = new DisplayCandidateStatsView();
 		displayStats = new JButton("Show Election Stats");
 		displayStats.setSize(200,50);
 		displayStatsX = .7;
@@ -91,7 +90,7 @@ public class VoterHomeView extends JPanel
 				showStats = true;
 				displayStats.setText("Hide Election Stats");
 				this.remove(stats);
-				stats = new DisplayCandidateStatsView(currentDriver);
+				stats = new DisplayCandidateStatsView();
 				this.add(stats);
 				//currentDriver.setSize(currentDriver.getWidth(), currentDriver.getHeight()+1);
 				//currentDriver.setSize(currentDriver.getWidth(), currentDriver.getHeight()-1);

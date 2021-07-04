@@ -1,14 +1,12 @@
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class AddedCandidateView extends JPanel
 {
-    private Launcher currentDriver;
 
     private JLabel welcomeTag;
     private double welcomeTagX, welcomeTagY;
@@ -19,9 +17,8 @@ public class AddedCandidateView extends JPanel
 
     private boolean loaded;
 
-    public AddedCandidateView(Launcher l) throws InterruptedException
+    public AddedCandidateView() throws InterruptedException
     {
-        currentDriver = l;
 
         this.setLayout(null);
         this.setOpaque(true);

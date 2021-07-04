@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -9,9 +11,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+@SuppressWarnings("serial")
 public class DisplayCandidateStatsView extends JPanel
 {
-	private Launcher currentDriver;
 
 	private JLabel label1;
 	private double label1X, label1Y;
@@ -29,10 +31,8 @@ public class DisplayCandidateStatsView extends JPanel
 
 	private boolean loaded;
 
-	public DisplayCandidateStatsView (Launcher l)
+	public DisplayCandidateStatsView ()
 	{
-
-		currentDriver = l;
 
 		this.setLayout(null);
 		
@@ -53,6 +53,7 @@ public class DisplayCandidateStatsView extends JPanel
 		stateY = 3/7.0;
 
 		next = new JButton();
+		next.setEnabled(true);
 		next.setText("Display");
 		next.setSize(100,50);
 		nextX = 0.5;
@@ -60,6 +61,7 @@ public class DisplayCandidateStatsView extends JPanel
 		next.addActionListener(e -> {
 			if(!(state.getSelectedItem().equals(" ")))
 			{
+				next.setEnabled(false);
 				displayStats((String)state.getSelectedItem());
 			}
 			else
@@ -101,15 +103,33 @@ public class DisplayCandidateStatsView extends JPanel
 		scroll = new JScrollPane(textArea);
 		frame.add(scroll); //We add the scroll, since the scroll already contains the textArea
 		frame.pack();
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		frame.addWindowListener(new WindowAdapter() {
+	        public void windowClosing(WindowEvent e) {
+	        	next.setEnabled(true);
+	        }
+	    });
 	}
 
 	private String formatDisplay(String state)
 	{
-		if(Candidate.isPresElec()) {
-			return(presi(state)+"\n"+candy(state, 2));
+		StringBuilder sb = new StringBuilder();
+		if(0 < Candidate.getPosNum()) {
+			if(Candidate.isPresElec()) {
+				sb.append(presi(state));
+				for(int i = 2; i < (Candidate.getPosNum() + 1); i++) {
+					sb.append("\n"+candy(state, i));
+				}
+				return sb.toString();
+			} else {
+				for(int i = 1; i < (Candidate.getPosNum() + 1); i++) {
+					sb.append(candy(state, i)+"\n");
+				}
+				return sb.toString();
+			}
 		} else {
-			return(candy(state, 1));
+			return "There is no Election";
 		}
 	}
 
