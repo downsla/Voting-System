@@ -310,7 +310,7 @@ public class Candidate extends Database {
 				double temp = Double.parseDouble(stats[i][j + 14]);
 				if(max[j] < temp) {
 					max[j] = temp;
-					ix[i] = i;
+					ix[j] = i;
 				}
 			}
 			sr[i][0] = stats[i][0];
@@ -319,7 +319,7 @@ public class Candidate extends Database {
 		}
 		for(int i = 1; i < statesList.length; i++) {
 			if(ix[i] != 0) {
-				sr[ix[i]][2] = String.valueOf(Integer.valueOf(sr[ix[i]][2]) + elecList[i - 1]);
+				sr[ix[i]][2] = String.valueOf(Integer.valueOf(sr[ix[i]][2]) + elecList[i]);
 			}
 		}
 		return sr;

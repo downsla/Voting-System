@@ -52,7 +52,8 @@ public class TestDriver_Liam {
 	
 	public static void main(String[] args) {
 		
-		Candidate.loadInitData(); //set data files
+		Candidate.loadData("TX"); //set data files
+		Ballot.loadData("TX");
 		Voter.loadData();
 		
 		String[] voterInfo = new String[11]; //creates array and populates with data for registered user
