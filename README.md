@@ -1,7 +1,6 @@
-# voterproject
-CPSC 4360 Voter Group Project - Summer 2021
-
-Simulating a Voting System in the United States  
+# Voting System
+CPSC 4360 Software Engineering - Simulating a Voting System in the US 07/04/2021
+ 
 The software’s main purpose is simulating a voting system in the United States. The second purpose of the software is to make sure that no one votes more than once.
 
 Instructions:  
